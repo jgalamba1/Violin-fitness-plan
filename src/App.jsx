@@ -275,6 +275,77 @@ const CORE_MAP=[
   {label:"Deep Stabilizers",day:"Home A",color:"#5A10AA"},
 ];
 
+// ── Muscle group relationships for seeding unlogged exercises ────────────────
+const MUSCLE_MAP = {
+  "Smith Machine Back Squat":       {m:["quad","glute","core"]},
+  "Smith Machine Front Squat":      {m:["quad","core"], from:[["Smith Machine Back Squat",0.85]]},
+  "Goblet Squat with Band":         {m:["quad","glute","glute_med"], from:[["Smith Machine Back Squat",0.35],["Leg Press (feet high)",0.25]]},
+  "Leg Press (feet high)":          {m:["quad","glute","hamstring"], from:[["Smith Machine Back Squat",1.8]]},
+  "Leg Extension Machine":          {m:["quad"], from:[["Smith Machine Back Squat",0.35],["Leg Press (feet high)",0.2]]},
+  "Smith Machine Split Squat (lighter, higher rep)":{m:["quad","glute"], from:[["Smith Machine Back Squat",0.45]]},
+  "Bulgarian Split Squat (DB)":     {m:["quad","glute"], from:[["Smith Machine Back Squat",0.3]]},
+  "Dumbbell Reverse Lunge":         {m:["quad","glute"], from:[["Bulgarian Split Squat (DB)",0.9],["Smith Machine Back Squat",0.25]]},
+  "Step-Up onto bench (DB)":        {m:["quad","glute"], from:[["Bulgarian Split Squat (DB)",0.8]]},
+  "Romanian Deadlift (Smith or DB)":{m:["hamstring","glute","lower_back"]},
+  "Smith Machine Conventional Deadlift":{m:["hamstring","glute","lower_back","quad"], from:[["Romanian Deadlift (Smith or DB)",1.15]]},
+  "Leg Curl Machine":               {m:["hamstring"], from:[["Romanian Deadlift (Smith or DB)",0.45]]},
+  "Single-Leg Curl Machine":        {m:["hamstring"], from:[["Leg Curl Machine",0.6]]},
+  "Dumbbell Single-Leg RDL":        {m:["hamstring","glute"], from:[["Romanian Deadlift (Smith or DB)",0.35]]},
+  "Hip Abduction Machine":          {m:["glute_med","glute"], from:[["Leg Press (feet high)",0.25],["Smith Machine Back Squat",0.35]]},
+  "Cable Hip Abduction":            {m:["glute_med"], from:[["Hip Abduction Machine",0.3]]},
+  "Smith Machine Incline Press":    {m:["chest_upper","front_delt","tricep"]},
+  "Smith Machine Flat Press":       {m:["chest","front_delt","tricep"], from:[["Smith Machine Incline Press",1.1]]},
+  "Dumbbell Incline Press":         {m:["chest_upper","front_delt","tricep"], from:[["Smith Machine Incline Press",0.75]]},
+  "Chest Dip (lean forward, max 90°)":{m:["chest","tricep","front_delt"], from:[["Smith Machine Flat Press",0.5]]},
+  "Dumbbell Lateral Raise":         {m:["mid_delt"], from:[["Smith Machine Incline Press",0.2]]},
+  "Cable Lateral Raise":            {m:["mid_delt"], from:[["Dumbbell Lateral Raise",0.85]]},
+  "Machine Lateral Raise":          {m:["mid_delt"], from:[["Dumbbell Lateral Raise",1.0]]},
+  "Dumbbell Shrug (slow + pause)":  {m:["upper_trap"], from:[["Smith Machine Back Squat",0.4],["Romanian Deadlift (Smith or DB)",0.35]]},
+  "Lat Pulldown":                   {m:["lat","bicep","mid_trap"]},
+  "Assisted Pull-Up Machine":       {m:["lat","bicep"], from:[["Lat Pulldown",1.0]]},
+  "Single-Arm Cable Pulldown":      {m:["lat","bicep"], from:[["Lat Pulldown",0.55]]},
+  "Low Cable Row (elbows flared)":  {m:["mid_trap","rear_delt","bicep"], from:[["Lat Pulldown",0.85]]},
+  "Seated Cable Row (wide grip)":   {m:["mid_trap","lat","bicep"], from:[["Lat Pulldown",0.9]]},
+  "Dumbbell Chest-Supported Row":   {m:["mid_trap","rear_delt"], from:[["Lat Pulldown",0.45]]},
+  "Dumbbell Curl":                  {m:["bicep"], from:[["Lat Pulldown",0.25]]},
+  "Cable Curl":                     {m:["bicep"], from:[["Dumbbell Curl",0.9]]},
+  "Hammer Curl":                    {m:["bicep","brachialis"], from:[["Dumbbell Curl",1.0]]},
+  "Cable Tricep Pushdown":          {m:["tricep"], from:[["Smith Machine Flat Press",0.3]]},
+  "Overhead Cable Tricep Extension":{m:["tricep"], from:[["Cable Tricep Pushdown",0.75]]},
+  "Skull Crusher (EZ bar)":         {m:["tricep"], from:[["Cable Tricep Pushdown",0.8]]},
+  "Standing Calf Raise Machine":    {m:["calf_gastro"]},
+  "Seated Calf Raise Machine":      {m:["calf_soleus"], from:[["Standing Calf Raise Machine",0.6]]},
+};
+
+function getLoggedAvg(history,exName){
+  const vals=[];
+  for(const e of Object.values(history)){
+    for(const [key,sets] of Object.entries(e.sets||{})){
+      if(key===exName||key.endsWith(":"+exName)){
+        const ws=Object.values(sets).map(s=>Number(s.weight)).filter(w=>w>0);
+        if(ws.length)vals.push(ws.reduce((a,b)=>a+b)/ws.length);
+      }
+    }
+  }
+  return vals.length?vals.reduce((a,b)=>a+b)/vals.length:null;
+}
+
+function seedWeight(history,exName){
+  const map=MUSCLE_MAP[exName];
+  if(!map||!map.from)return null;
+  const estimates=[];
+  for(const [anchorEx,ratio] of map.from){
+    const anchorAvg=getLoggedAvg(history,anchorEx);
+    if(anchorAvg!=null){
+      const raw=anchorAvg*ratio;
+      const conservative=Math.max(5,Math.floor(raw/5)*5-5);
+      estimates.push(conservative);
+    }
+  }
+  if(!estimates.length)return null;
+  return Math.min(...estimates);
+}
+
 function getPhase(history){
   const dates=Object.values(history).map(e=>e.date).filter(Boolean).sort();
   if(!dates.length)return{phase:"linear",weekNum:0,label:null};
@@ -283,48 +354,69 @@ function getPhase(history){
   if(weeks<26)return{phase:"linear",weekNum:weeks,label:null};
   const blockWeek=(weeks-26)%8;
   if(blockWeek<4){
-    return{phase:"volume",weekNum:weeks,blockWeek:blockWeek+1,label:"VOLUME PHASE — Week "+(blockWeek+1)+"/4 · higher reps, moderate weight"};
+    return{phase:"volume",weekNum:weeks,blockWeek:blockWeek+1,
+      label:"VOLUME PHASE — Week "+(blockWeek+1)+"/4 · higher reps, moderate weight"};
   } else {
-    return{phase:"intensity",weekNum:weeks,blockWeek:blockWeek-3,label:"INTENSITY PHASE — Week "+(blockWeek-3)+"/4 · lower reps, heavier weight"};
+    return{phase:"intensity",weekNum:weeks,blockWeek:blockWeek-3,
+      label:"INTENSITY PHASE — Week "+(blockWeek-3)+"/4 · lower reps, heavier weight"};
   }
 }
 
 function getSuggestion(history,dayNum,groupName,repsStr,chosenEx){
-  const targetMin=parseInt(repsStr)||10;
+  const repsMatch=repsStr?repsStr.match(/\d+/g):null;
+  const baseMax=repsMatch?Math.max(...repsMatch.map(Number)):10;
+  const baseMin=repsMatch?Math.min(...repsMatch.map(Number)):baseMax-2;
   const phase=getPhase(history);
-  // Key by group+exercise so each exercise tracks independently
+
+  let repTarget=baseMax;
+  let repTargetLabel=String(baseMax)+" reps";
+  if(phase.phase==="volume"){
+    repTarget=baseMax+3;
+    repTargetLabel=(baseMax+3)+" reps (volume)";
+  } else if(phase.phase==="intensity"){
+    repTarget=Math.max(3,baseMin-2);
+    repTargetLabel=Math.max(3,baseMin-2)+"–"+baseMin+" reps (intensity)";
+  }
+
   const exKey=chosenEx?groupName+":"+chosenEx:groupName;
-  // Fall back to old group-only key for existing history entries
   const sessions=Object.entries(history).sort(([a],[b])=>b-a)
     .filter(([,e])=>e.day===dayNum&&(e.sets?.[exKey]||e.sets?.[groupName]))
     .slice(0,2);
-  if(!sessions.length)return null;
+
+  if(!sessions.length){
+    const seeded=chosenEx?seedWeight(history,chosenEx):null;
+    if(seeded){
+      return{weight:null,suggest:seeded,hitReps:false,phase,seeded:true,repTargetLabel,
+        note:"Est. from similar exercises — conservative, adjust as needed"};
+    }
+    return null;
+  }
+
   const [,last]=sessions[0];
   const sets=last.sets[exKey]||last.sets[groupName];
   const vals=Object.values(sets);
   const weights=vals.map(s=>Number(s.weight)).filter(Boolean);
   if(!weights.length)return null;
   const avg=Math.round(weights.reduce((a,b)=>a+b,0)/weights.length/5)*5;
-  const hitReps=vals.map(s=>Number(s.reps)).filter(Boolean).every(r=>r>=targetMin);
-  const avgReps=vals.map(s=>Number(s.reps)).filter(Boolean).reduce((a,b)=>a+b,0)/(vals.length||1);
+  const loggedReps=vals.map(s=>Number(s.reps)).filter(Boolean);
+  const hitReps=loggedReps.length>0&&loggedReps.every(r=>r>=repTarget);
 
   if(phase.phase==="linear"){
-    return{weight:avg,suggest:hitReps?avg+5:avg,hitReps,phase,
-      note:hitReps?"Hit all reps — increase weight":"Missed reps — hold weight"};
+    return{weight:avg,suggest:hitReps?avg+5:avg,hitReps,phase,repTargetLabel,
+      note:hitReps?"Hit target — increase weight":"Target "+repTargetLabel};
   }
   if(phase.phase==="volume"){
-    const volumeTarget=targetMin+3;
-    const suggest=avgReps>=volumeTarget?avg+5:avg;
-    return{weight:avg,suggest,hitReps:avgReps>=volumeTarget,phase,
-      note:avgReps>=volumeTarget?"Volume target hit — increase weight":"Build reps before adding weight"};
+    return{weight:avg,suggest:hitReps?avg+5:avg,hitReps,phase,repTargetLabel,
+      note:hitReps?"Volume target hit — increase weight":"Target "+repTargetLabel};
   }
   if(phase.phase==="intensity"){
     const intensitySuggest=Math.round((avg*1.1)/5)*5;
-    return{weight:avg,suggest:hitReps?avg+5:intensitySuggest,hitReps,phase,
-      note:hitReps?"Strength target hit — increase weight":"Work up to this intensity weight"};
+    return{weight:avg,suggest:hitReps?avg+5:intensitySuggest,hitReps,phase,repTargetLabel,
+      note:hitReps?"Strength target hit — increase":"Target "+repTargetLabel+" at "+intensitySuggest+"lb"};
   }
   return null;
 }
+
 
 function getLastReps(history,dayNum,groupName){
   for(const [,e] of Object.entries(history).sort(([a],[b])=>b-a)){
@@ -573,8 +665,8 @@ export default function WorkoutTracker(){
             {sug&&(
               <div style={{marginBottom:10}}>
                 {sug.phase?.label&&<div style={{padding:"4px 10px",fontFamily:"'Space Mono',monospace",fontSize:9,letterSpacing:".1em",background:"#0A40AA12",borderLeft:"2px solid #0A40AA",color:"#0A40AA",marginBottom:4}}>{sug.phase.label}</div>}
-                <div style={{padding:"6px 10px",fontFamily:"'Space Mono',monospace",fontSize:10,background:sug.hitReps?"#3DD67A18":"#FFB8331a",borderLeft:`2px solid ${sug.hitReps?"#0A7A2A":"#AA6800"}`,color:sug.hitReps?"#0A7A2A":"#AA6800"}}>
-                  {sug.hitReps?"⬆":"→"} Suggested: {sug.suggest} lbs · {sug.note}
+                <div style={{padding:"6px 10px",fontFamily:"'Space Mono',monospace",fontSize:10,background:sug.seeded?"#0A40AA10":sug.hitReps?"#3DD67A18":"#FFB8331a",borderLeft:`2px solid ${sug.seeded?"#0A40AA":sug.hitReps?"#0A7A2A":"#AA6800"}`,color:sug.seeded?"#0A40AA":sug.hitReps?"#0A7A2A":"#AA6800"}}>
+                  {sug.seeded?"💡":"→"} {sug.suggest} lbs · {sug.repTargetLabel} · {sug.note}
                 </div>
               </div>
             )}
@@ -585,9 +677,9 @@ export default function WorkoutTracker(){
               <div key={i} style={{display:"grid",gridTemplateColumns:"28px 1fr 1fr",gap:5,marginBottom:4,alignItems:"center"}}>
                 <div style={{color:"#6A5A3A",fontSize:11,textAlign:"center",fontFamily:"'Space Mono',monospace"}}>{i+1}</div>
                 <input style={{background:"#C8BBA0",border:"1px solid #1c1c1c",color:"#0A0806",padding:"8px 10px",fontFamily:"'Space Mono',monospace",fontSize:13,width:"100%",outline:"none"}}
-                  type="number" placeholder={sug?String(sug.suggest):"—"} value={sessionData[group.name]?.[i]?.weight||""} onChange={e=>updateSet(chosen?group.name+":"+chosen:group.name,i,"weight",e.target.value)}/>
+                  type="number" placeholder={sug?String(sug.suggest):"—"} value={sessionData[chosen?group.name+":"+chosen:group.name]?.[i]?.weight||""} onChange={e=>updateSet(chosen?group.name+":"+chosen:group.name,i,"weight",e.target.value)}/>
                 <input style={{background:"#C8BBA0",border:"1px solid #1c1c1c",color:"#0A0806",padding:"8px 10px",fontFamily:"'Space Mono',monospace",fontSize:13,width:"100%",outline:"none"}}
-                  type="number" placeholder={group.reps.split(/[–—]/)[0]} value={sessionData[group.name]?.[i]?.reps||""} onChange={e=>updateSet(chosen?group.name+":"+chosen:group.name,i,"reps",e.target.value)}/>
+                  type="number" placeholder={group.reps.split(/[–—]/)[0]} value={sessionData[chosen?group.name+":"+chosen:group.name]?.[i]?.reps||""} onChange={e=>updateSet(chosen?group.name+":"+chosen:group.name,i,"reps",e.target.value)}/>
               </div>
             ))}
           </>);
