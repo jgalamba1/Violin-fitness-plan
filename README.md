@@ -1,6 +1,6 @@
 # 🎻 Violin Gym Tracker
 
-A workout tracking app for violinists, with a lotus position flexibility progression. Built by ClaudeAI with React + Capacitor.
+A workout tracking app for violinists, built with React + Capacitor.
 
 ## Building the Android APK via GitHub Actions
 
