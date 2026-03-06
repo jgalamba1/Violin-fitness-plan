@@ -356,12 +356,14 @@ export default function WorkoutTracker(){
       if (type === 'warning') {
         await Haptics.impact({ style: ImpactStyle.Medium });
       } else if (type === 'done') {
-        await Haptics.notification({ type: NotificationType.Success });
-      } else if (type === 'tick') {
-        await Haptics.impact({ style: ImpactStyle.Light });
+        // Triple pulse — fire three impacts with delays
+        await Haptics.impact({ style: ImpactStyle.Heavy });
+        await new Promise(r => setTimeout(r, 120));
+        await Haptics.impact({ style: ImpactStyle.Heavy });
+        await new Promise(r => setTimeout(r, 120));
+        await Haptics.impact({ style: ImpactStyle.Heavy });
       }
     } catch {
-      // Fallback for browser preview
       try { if(navigator.vibrate) navigator.vibrate(type === 'done' ? [200,100,200,100,400] : 80); } catch {}
     }
   }, []);
@@ -377,7 +379,7 @@ export default function WorkoutTracker(){
           vibrate('done');
           return {...t, seconds:0, running:false};
         }
-        if(t.seconds === 4) {
+        if(t.seconds <= 5 && t.seconds >= 1) {
           vibrate('warning');
         }
         return {...t, seconds:t.seconds-1};
