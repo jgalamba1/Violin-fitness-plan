@@ -21,15 +21,24 @@ const INFO = {
   "Chin Tuck":["Draw chin straight back — not down. Hold 5 seconds. Activates deep neck flexors.",YT("chin tuck deep neck flexor activation")],
   "Band Pull-Apart (warm-up)":["Shoulder-width grip, arms extended. Pull fully apart. Wakes up rear delts and rotator cuff.",YT("band pull apart warm up shoulder")],
   "Smith Machine Back Squat":["Bar on upper traps. Feet 6–12\" forward of bar. Squat to parallel, drive through heels.",YT("smith machine back squat form")],
+  "Goblet Squat with Band":["🪜 PROGRESSION STEP toward barbell back squat. Hold DB or KB vertically at chest. Place light resistance band just above knees — actively push knees out against it throughout the entire movement. This simultaneously grooves squat pattern, activates glute medius, corrects knee tracking, and engages VMO. Use once cleared from acute knee pain. Feet shoulder-width, elbows track inside knees, chest tall.",YT("goblet squat resistance band knees out")],
+  "Barbell Back Squat (Squat Rack)":["🔓 UNLOCK LATER — requires safety bars set at parallel height. Bar on upper traps, feet shoulder-width. Break at hips and knees simultaneously, chest up throughout. Safety bars catch the weight if you fail a rep.",YT("barbell back squat squat rack form")],
   "Smith Machine Front Squat":["Bar on front delts, elbows high, upright torso throughout.",YT("smith machine front squat form")],
+  "Barbell Front Squat (Squat Rack)":["🔓 UNLOCK LATER — requires safety bars. Bar rests on front delts with elbows high. Safety bars essential as front squat is difficult to bail from safely.",YT("barbell front squat squat rack form")],
   "Leg Press (feet high)":["High feet loads glutes/hams more. Lower to 90° knee angle.",YT("leg press high feet placement form")],
   "Smith Machine Incline Press":["30–45° bench. Bar to upper chest, elbows ~45° from torso.",YT("smith machine incline press form")],
+  "Barbell Incline Press (Squat Rack)":["🔓 UNLOCK LATER — use squat rack with j-hooks set at correct height. Requires a spotter for working sets. Bench at 30–45°, bar to upper chest.",YT("barbell incline bench press form spotter")],
   "Smith Machine Flat Press":["Natural arch, bar touches mid-chest, controlled descent.",YT("smith machine bench press form")],
+  "Barbell Flat Press (Squat Rack)":["🔓 UNLOCK LATER — rack j-hooks at correct height. Always use a spotter or set safety bars just below chest height. Bar touches mid-chest, elbows ~45° from torso.",YT("barbell bench press form spotter")],
   "Dumbbell Incline Press":["Control descent, don't let dumbbells drift too wide.",YT("dumbbell incline press form")],
   "Chest Dip (lean forward, max 90°)":["Lean torso forward ~30°. Hard stop at 90° — deeper stresses the shoulder capsule.",YT("chest dip safe form shoulder")],
   "Bulgarian Split Squat (DB)":["Rear foot elevated. Descend straight down, front shin stays vertical.",YT("bulgarian split squat dumbbell form")],
   "Dumbbell Reverse Lunge":["Step back, lower rear knee toward floor, drive through front heel to return.",YT("dumbbell reverse lunge form")],
   "Step-Up onto bench (DB)":["Drive through the working heel only — don't push off the back foot.",YT("dumbbell step up exercise form")],
+  "Dumbbell Shrug (slow + pause)":["Violin priority — targets the elongated left trapezius directly as a prime mover. Hold dumbbells at sides, elevate shoulders straight up, pause 2 sec at top, lower with full control over 3 sec. Do NOT roll shoulders. Train both sides but use slightly heavier weight on the left, or add an extra set on the left side.",YT("dumbbell shrug upper trapezius form")],
+  "Single-Arm Farmer's Carry (left priority)":["Violin priority — carry a dumbbell in each hand but use a heavier weight in the left. Walk slowly for 20–30 metres or 30 sec. The left trapezius must resist the shoulder dropping under load — exactly the deficit identified by your physio. Keep both shoulders actively elevated and retracted, with particular focus on the left. Start light.",YT("single arm farmers carry trapezius form")],
+  "Dumbbell Overhead Press (Unilateral)":["🔓 UNLOCK LATER — requires solid scapular stability first (3–6 months of current program minimum, physio clearance recommended for elongated left trapezius). Press both arms but lead with the left — can add an extra set on the left side if needed. Keep core braced, avoid arching lower back. The trapezius must upwardly rotate the scapula under load; this is therapeutic for an elongated trap once stability is established.",YT("dumbbell overhead press unilateral form")],
+  "Barbell Overhead Press (Squat Rack)":["🔓 UNLOCK LATER — progress from unilateral dumbbell press first. Requires safety bars and ideally a spotter. Grip just outside shoulder width, bar starts at collarbone, press straight up. Demands full scapular stability from both sides simultaneously.",YT("barbell overhead press squat rack form")],
   "Dumbbell Lateral Raise":["Lead with elbows, raise to shoulder height only.",YT("dumbbell lateral raise proper form")],
   "Cable Lateral Raise":["Constant tension throughout.",YT("cable lateral raise form")],
   "Machine Lateral Raise":["Align resistance arm with your elbow. Control the eccentric fully.",YT("machine lateral raise form")],
@@ -71,14 +80,16 @@ const INFO = {
   "Romanian Deadlift (Smith or DB)":["Hinge at hips, slight knee bend. Lower until strong hamstring stretch, drive hips forward.",YT("romanian deadlift form tutorial")],
   "Smith Machine Conventional Deadlift":["Bar over mid-foot, flat back. Hips and shoulders rise together.",YT("smith machine deadlift form")],
   "Dumbbell Single-Leg RDL":["Hinge on one leg, hips square. Wall touch for balance if needed.",YT("single leg romanian deadlift dumbbell form")],
-  "Leg Extension Machine":["Extend fully, hold 1 sec at peak.",YT("leg extension machine form")],
+  "Resistance Band TKE":["Terminal Knee Extension. Anchor band at knee height behind you, loop around back of knee. Stand facing anchor, slight bend in knee. Extend knee to straight against band resistance — focus on the last 30° only. The safest VMO exercise for symptomatic knees as it is closed-chain.",YT("resistance band terminal knee extension TKE")],
+  "Leg Extension Machine":["⚠ VMO REHAB SUBSTITUTE — use partial range (final 40° of extension only) if knee is symptomatic. Extend fully, hold 1 sec at peak.",YT("leg extension machine form")],
   "Smith Machine Split Squat (lighter, higher rep)":["Front foot far enough so knee doesn't pass toes.",YT("smith machine split squat form")],
+  "Barbell Split Squat (Squat Rack)":["🔓 UNLOCK LATER — use squat rack with safety bars set at hip height. No spotter needed if bars are set correctly. Keep torso upright.",YT("barbell split squat squat rack form")],
   "Leg Curl Machine":["Hips down, curl fully, pause at peak, slow controlled return.",YT("leg curl machine proper form")],
   "Single-Leg Curl Machine":["Keep hips even — don't rotate to compensate.",YT("single leg curl machine form")],
   "Cable Woodchop (high-to-low)":["Cable set high. Rotate from high outside to low opposite hip.",YT("cable woodchop high to low form")],
   "Cable Woodchop (low-to-high)":["Cable set low. Drive upward in diagonal arc.",YT("cable woodchop low to high form")],
   "Landmine Rotation":["Hold barbell end with both hands. Rotate side to side. Very light weight.",YT("landmine rotation core exercise")],
-  "Hip Abduction Machine":["Pads on outside of knees. Push outward, control return.",YT("hip abduction machine form glute med")],
+  "Hip Abduction Machine":["Sit upright — do not lean back. Leaning shifts work to the TFL instead of glute medius and can worsen IT band issues. Pads on outside of knees. Push outward, control return.",YT("hip abduction machine form glute med")],
   "Cable Hip Abduction":["Cuff on ankle. Raise leg to side, keep torso still.",YT("cable hip abduction standing form")],
   "Side Plank":["One forearm on floor, body in straight line. Squeeze glutes and obliques.",YT("side plank form tutorial")],
   "Side Plank with Hip Dip":["From side plank, lower hip to just above floor and raise back.",YT("side plank hip dip exercise")],
@@ -177,10 +188,10 @@ const LEG_PRESS_BACK_GROUP = {name:"Lower Back — Auto Added",autoAdded:true,mo
 
 const DAYS = {
   1:{type:"gym",label:"GYM DAY 1",subtitle:"Push + Squat + Core A + Cardio",color:"#AA2A0A",groups:[
-    {name:"Squat Pattern",supersetId:"A",supersetRest:"90 sec",mode:"log",sets:4,reps:"6–8",exercises:["Smith Machine Back Squat","Smith Machine Front Squat","Leg Press (feet high)"]},
-    {name:"Horizontal Push",supersetId:"A",mode:"log",sets:4,reps:"6–8",exercises:["Smith Machine Incline Press","Smith Machine Flat Press","Dumbbell Incline Press","Chest Dip (lean forward, max 90°)"]},
-    {name:"Single-Leg Strength",supersetId:"B",supersetRest:"75 sec",mode:"log",sets:3,reps:"8–10",exercises:["Bulgarian Split Squat (DB)","Dumbbell Reverse Lunge","Step-Up onto bench (DB)"]},
-    {name:"Shoulder / Lateral",supersetId:"B",mode:"log",sets:3,reps:"12–15",exercises:["Dumbbell Lateral Raise","Cable Lateral Raise","Machine Lateral Raise"]},
+    {name:"Squat Pattern",supersetId:"A",supersetRest:"90 sec",mode:"log",sets:4,reps:"6–8",exercises:["Smith Machine Back Squat","Smith Machine Front Squat","Leg Press (feet high)","Goblet Squat with Band","Barbell Back Squat (Squat Rack)","Barbell Front Squat (Squat Rack)"]},
+    {name:"Horizontal Push",supersetId:"A",mode:"log",sets:4,reps:"6–8",exercises:["Smith Machine Incline Press","Smith Machine Flat Press","Dumbbell Incline Press","Chest Dip (lean forward, max 90°)","Barbell Incline Press (Squat Rack)","Barbell Flat Press (Squat Rack)"]},
+    {name:"Single-Leg Strength",supersetId:"B",supersetRest:"75 sec",mode:"log",sets:3,reps:"8–10",vmoAlt:true,exercises:["Bulgarian Split Squat (DB)","Dumbbell Reverse Lunge","Step-Up onto bench (DB)"]},
+    {name:"Shoulder / Lateral",supersetId:"B",mode:"log",sets:3,reps:"12–15",exercises:["Dumbbell Lateral Raise","Cable Lateral Raise","Machine Lateral Raise","Dumbbell Overhead Press (Unilateral)","Barbell Overhead Press (Squat Rack)"]},
     {name:"Tricep",supersetId:"C",supersetRest:"60 sec",mode:"log",sets:3,reps:"12",exercises:["Cable Tricep Pushdown","Overhead Cable Extension","Dumbbell Skull Crusher","Tricep Dip (upright torso, max 90°)"]},
     {name:"Core — Flexion",supersetId:"C",core:true,mode:"log",sets:3,reps:"15",exercises:["Cable Crunch","Ab Machine","Hanging Knee Raise (captain's chair)"]},
     {name:"Core — Anti-Extension",core:true,mode:"log",sets:3,reps:"45 sec",exercises:["Plank","RKC Plank (squeeze everything)","Ab Wheel Rollout"]},
@@ -194,11 +205,12 @@ const DAYS = {
     {name:"Face Pull / Rear Delt / Rotator Cuff",violin:true,nonneg:true,violinStraight:true,violinRest:"45–50 sec",mode:"log",sets:4,reps:"15",exercises:["Cable Face Pull (rope, eye height)","Cable Pull-Apart (low-to-high)","Reverse Pec Deck Machine"]},
     {name:"External Rotation — Rotator Cuff",violin:true,violinStraight:true,violinRest:"45–50 sec",mode:"log",sets:3,reps:"15",exercises:["Cable External Rotation (elbow at side)","Dumbbell Side-Lying External Rotation","Cable External Rotation (90° abducted)"]},
     {name:"Lower Trap & Scapular Stability",violin:true,violinStraight:true,violinRest:"45–50 sec",mode:"log",sets:4,reps:"10 each",exercises:["Y-T-W on Incline Bench (light DB)","Cable Y-Raise","Prone Y-T-W on incline bench"]},
+    {name:"Upper Trap — Left Priority",violin:true,violinStraight:true,violinRest:"60 sec",mode:"log",sets:3,reps:"10–12",exercises:["Dumbbell Shrug (slow + pause)","Single-Arm Farmer's Carry (left priority)"]},
     {name:"Core — Anti-Rotation",core:true,mode:"log",sets:3,reps:"10 each",exercises:["Pallof Press (cable, both sides)","Pallof Press with Rotation","Half-Kneeling Cable Chop"]},
   ]},
   3:{type:"gym",label:"GYM DAY 3",subtitle:"Lower Body + Core C + Cardio",color:"#0A7A2A",groups:[
-    {name:"Hip Hinge",supersetId:"A",supersetRest:"90 sec",mode:"log",sets:4,reps:"8–10",exercises:["Romanian Deadlift (Smith or DB)","Smith Machine Conventional Deadlift","Dumbbell Single-Leg RDL"]},
-    {name:"Quad Accessory",supersetId:"A",mode:"log",sets:3,reps:"12–15",exercises:["Leg Extension Machine","Smith Machine Split Squat (lighter, higher rep)"]},
+    {name:"Hip Hinge",supersetId:"A",supersetRest:"90 sec",mode:"log",sets:4,reps:"8–10",exercises:["Romanian Deadlift (Smith or DB)","Smith Machine Conventional Deadlift","Dumbbell Single-Leg RDL","Barbell Conventional Deadlift"]},
+    {name:"Quad Accessory",supersetId:"A",mode:"log",sets:3,reps:"12–15",exercises:["Leg Extension Machine","Smith Machine Split Squat (lighter, higher rep)","Barbell Split Squat (Squat Rack)"]},
     {name:"Hamstring Isolation",supersetId:"B",supersetRest:"75 sec",mode:"log",sets:3,reps:"10–12",exercises:["Leg Curl Machine","Single-Leg Curl Machine"]},
     {name:"Core — Rotation",supersetId:"B",core:true,mode:"log",sets:3,reps:"12 each",exercises:["Cable Woodchop (high-to-low)","Cable Woodchop (low-to-high)","Landmine Rotation"]},
     {name:"Hip Abduction / Glute Med",supersetId:"C",supersetRest:"60 sec",mode:"log",sets:3,reps:"15",exercises:["Hip Abduction Machine","Cable Hip Abduction"]},
@@ -330,6 +342,7 @@ export default function WorkoutTracker(){
   const [showCore,setShowCore]=useState(false);
   const [showWarmup,setShowWarmup]=useState(true);
   const [infoEx,setInfoEx]=useState(null);
+  const [openVMO,setOpenVMO]=useState(false);
 
   const [cycle, setCycle] = useState({start:null, done:[]});
   const [lotusLast, setLotusLast] = useState(null);
@@ -499,9 +512,9 @@ export default function WorkoutTracker(){
             <div style={{color:"#6A5A3A",fontSize:9,letterSpacing:".2em",fontFamily:"'Space Mono',monospace",marginBottom:6}}>SELECT EXERCISE</div>
             {group.exercises.map(ex=>(
               <div key={ex} style={{display:"flex",gap:5,marginBottom:3}}>
-                <button style={{background:"none",border:`1px solid ${chosen===ex?day.color+"50":"#BFB298"}`,color:chosen===ex?day.color:"#3c3c3c",padding:"8px 11px",fontFamily:"'Space Mono',monospace",fontSize:10,cursor:"pointer",flex:1,textAlign:"left",marginBottom:0}}
+                <button style={{background:"none",border:`1px solid ${chosen===ex?day.color+"50":"#BFB298"}`,color:chosen===ex?day.color:INFO[ex]&&INFO[ex][0].startsWith("🔓")?"#9A8A6A":"#3c3c3c",padding:"8px 11px",fontFamily:"'Space Mono',monospace",fontSize:10,cursor:"pointer",flex:1,textAlign:"left",marginBottom:0,opacity:INFO[ex]&&INFO[ex][0].startsWith("🔓")&&chosen!==ex?0.55:1}}
                   onClick={()=>setSelectedEx(p=>({...p,[group.name]:ex}))}>
-                  {chosen===ex?"▶  ":"    "}{ex}
+                  {chosen===ex?"▶  ":"    "}{INFO[ex]&&INFO[ex][0].startsWith("🔓")?"🔓 ":INFO[ex]&&INFO[ex][0].startsWith("⚠")?"⚠ ":""}{ex}
                 </button>
                 <button onClick={()=>setInfoEx(ex)} style={{background:"none",border:"1px solid #181818",color:"#6A5A3A",width:28,cursor:"pointer",fontSize:11,flexShrink:0,fontFamily:"'Space Mono',monospace"}}
                   onMouseEnter={e=>{e.currentTarget.style.color="#2A1E0E";e.currentTarget.style.borderColor="#6A5A3A"}}
@@ -580,6 +593,29 @@ export default function WorkoutTracker(){
             })}
           </div>
         )}
+        {group.vmoAlt&&(
+          <div style={{marginTop:10,borderTop:"1px solid #C8BBA0",paddingTop:10}}>
+            <button onClick={()=>setOpenVMO(p=>!p)}
+              style={{background:"none",border:"1px solid #AA2A0A40",color:"#AA2A0A",padding:"6px 12px",cursor:"pointer",fontFamily:"'Space Mono',monospace",fontSize:9,letterSpacing:".15em",width:"100%",textAlign:"left",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+              <span>⚠ ALT FOR VMO WEAKNESS</span>
+              <span>{openVMO?"▲":"▼"}</span>
+            </button>
+            {openVMO&&(
+              <div style={{marginTop:8,padding:"10px 12px",background:"#D4C9B0",border:"1px solid #AA2A0A30"}}>
+                <div style={{color:"#AA2A0A",fontSize:9,letterSpacing:".15em",fontFamily:"'Space Mono',monospace",marginBottom:8}}>SUBSTITUTE THESE FOR SINGLE-LEG EXERCISES WHILE VMO IS WEAK</div>
+                {["Resistance Band TKE","Leg Extension Machine"].map(ex=>(
+                  <div key={ex} style={{display:"flex",gap:5,marginBottom:6,alignItems:"flex-start"}}>
+                    <div style={{flex:1}}>
+                      <div style={{color:"#3A2A12",fontSize:10,fontFamily:"'Space Mono',monospace",marginBottom:3}}>{ex}</div>
+                      {INFO[ex]&&<div style={{color:"#6A5A3A",fontSize:9,fontFamily:"'Space Mono',monospace",lineHeight:1.5,marginBottom:4}}>{INFO[ex][0]}</div>}
+                    </div>
+                    <button onClick={()=>setInfoEx(ex)} style={{background:"none",border:"1px solid #C8BBA0",color:"#6A5A3A",width:26,height:26,cursor:"pointer",fontSize:10,flexShrink:0,fontFamily:"'Space Mono',monospace"}}>ℹ</button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     );
   };
@@ -592,6 +628,7 @@ export default function WorkoutTracker(){
           {group.nonneg&&<span style={{display:"inline-block",padding:"2px 7px",fontSize:9,letterSpacing:".12em",fontFamily:"'Space Mono',monospace",background:"#FFB83330",color:"#AA6800"}}>🎻 MUST DO</span>}
           {group.autoAdded&&<span style={{display:"inline-block",padding:"2px 7px",fontSize:9,letterSpacing:".12em",fontFamily:"'Space Mono',monospace",background:"#FFB83330",color:"#AA6800"}}>⚠ AUTO-ADDED</span>}
           {group.violin&&!group.nonneg&&<span style={{display:"inline-block",padding:"2px 7px",fontSize:9,letterSpacing:".12em",fontFamily:"'Space Mono',monospace",background:"#4A95FF20",color:"#0A40AA"}}>🎻</span>}
+          {group.vmoAlt&&<span style={{display:"inline-block",padding:"2px 7px",fontSize:9,letterSpacing:".12em",fontFamily:"'Space Mono',monospace",background:"#AA2A0A18",color:"#AA2A0A",border:"1px solid #AA2A0A30"}}>VMO ALT</span>}
           {group.core&&<span style={{display:"inline-block",padding:"2px 7px",fontSize:9,letterSpacing:".12em",fontFamily:"'Space Mono',monospace",background:"#FFB83318",color:"#AA6800"}}>CORE</span>}
           {group.cardio&&<span style={{display:"inline-block",padding:"2px 7px",fontSize:9,letterSpacing:".12em",fontFamily:"'Space Mono',monospace",background:"#3DD67A22",color:"#0A7A2A"}}>♥ CARDIO</span>}
           {group.mode==="check"&&<span style={{display:"inline-block",padding:"2px 7px",fontSize:9,letterSpacing:".12em",fontFamily:"'Space Mono',monospace",background:"#ffffff08",color:"#5A4A2E"}}>STRETCH</span>}
@@ -890,7 +927,7 @@ export default function WorkoutTracker(){
                   <div key={d} onClick={()=>{setCurrentDay(d);setSessionData({});setSelectedEx({});setOpenGroup(null);setShowWarmup(true);setView("workout");}}
                     style={{border:`1px solid ${currentDay===d?DAYS[d].color+"38":isDone?"#1e2a1e":"#BFB298"}`,padding:"15px 17px",cursor:"pointer",position:"relative",overflow:"hidden",background:isDone?"#DDD4BC":"transparent",opacity:isDone?0.72:1}}>
                     <div style={{position:"absolute",left:0,top:0,bottom:0,width:3,background:isDone?"#0A7A2A":DAYS[d].color,opacity:isDone?0.8:currentDay===d?1:0.12}}/>
-                    {isDone&&<div style={{position:"absolute",right:14,top:"50%",transform:"translateY(-50%)",color:"#0A7A2A",fontSize:18}}>&check;</div>}
+                    {isDone&&<div style={{position:"absolute",right:14,top:"50%",transform:"translateY(-50%)",color:"#0A7A2A",fontSize:18}}>🎉</div>}
                     <div style={{paddingLeft:13,paddingRight:isDone?32:0}}>
                       <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:3,flexWrap:"wrap"}}>
                         <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:17,color:isDone?"#0A7A2A":DAYS[d].color,letterSpacing:".07em"}}>{DAYS[d].label}</span>
