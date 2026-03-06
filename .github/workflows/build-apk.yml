@@ -120,15 +120,14 @@ jobs:
             fs.writeFileSync(path.join(anydpiDir, 'ic_launcher_round.xml'), iconXml);
             console.log('Written adaptive icon XML');
 
-            // 4. Background colour resource
-            const valuesDir = path.join(RES, 'values');
-            fs.mkdirSync(valuesDir, { recursive: true });
-            const colorsXml = `<?xml version="1.0" encoding="utf-8"?>
-          <resources>
-              <color name="ic_launcher_background">#E8DFCD</color>
-          </resources>`;
-            fs.writeFileSync(path.join(valuesDir, 'ic_launcher_colors.xml'), colorsXml);
-            console.log('Written background color resource');
+            // 4. Overwrite Capacitor's existing background color file
+            const bgColorFile = path.join(RES, 'values', 'ic_launcher_background.xml');
+            if (fs.existsSync(bgColorFile)) {
+              let bgXml = fs.readFileSync(bgColorFile, 'utf8');
+              bgXml = bgXml.replace(/#[0-9A-Fa-f]{6,8}/g, '#E8DFCD');
+              fs.writeFileSync(bgColorFile, bgXml);
+              console.log('Updated existing background color file');
+            }
 
             console.log('All icons generated successfully');
           }
