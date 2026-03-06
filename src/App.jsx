@@ -365,23 +365,23 @@ function getPhase(history){
 function getSuggestion(history,dayNum,groupName,repsStr,chosenEx){
   const repsMatch=repsStr?repsStr.match(/\d+/g):null;
   const baseMax=repsMatch?Math.max(...repsMatch.map(Number)):10;
-  const baseMin=repsMatch?Math.min(...repsMatch.map(Number)):baseMax-2;
+  const baseMin=repsMatch&&repsMatch.length>1?Math.min(...repsMatch.map(Number)):Math.max(3,baseMax-2);
   const phase=getPhase(history);
 
   let repTarget=baseMax;
-  let repTargetLabel=String(baseMax)+" reps";
+  let repTargetLabel=baseMin<baseMax?(baseMin+"–"+baseMax+" reps"):baseMax+" reps";
   if(phase.phase==="volume"){
     repTarget=baseMax+3;
-    repTargetLabel=(baseMax+3)+" reps (volume)";
+    repTargetLabel=(baseMax+1)+"–"+(baseMax+3)+" reps (volume)";
   } else if(phase.phase==="intensity"){
     repTarget=Math.max(3,baseMin-2);
-    repTargetLabel=Math.max(3,baseMin-2)+"–"+baseMin+" reps (intensity)";
+    repTargetLabel=Math.max(3,baseMin-2)+"–"+(baseMin-1)+" reps (intensity, heavier)";
   }
 
   const exKey=chosenEx?groupName+":"+chosenEx:groupName;
-  const sessions=Object.entries(history).sort(([a],[b])=>b-a)
+  const sessions=Object.entries(history).sort(([a],[b])=>Number(b)-Number(a))
     .filter(([,e])=>e.day===dayNum&&(e.sets?.[exKey]||e.sets?.[groupName]))
-    .slice(0,2);
+    .slice(0,3);
 
   if(!sessions.length){
     const seeded=chosenEx?seedWeight(history,chosenEx):null;
@@ -394,25 +394,50 @@ function getSuggestion(history,dayNum,groupName,repsStr,chosenEx){
 
   const [,last]=sessions[0];
   const sets=last.sets[exKey]||last.sets[groupName];
-  const vals=Object.values(sets);
-  const weights=vals.map(s=>Number(s.weight)).filter(Boolean);
+  const vals=Object.values(sets).filter(s=>s&&typeof s==="object"&&(s.weight||s.reps));
+  const weights=vals.map(s=>Number(s.weight)).filter(w=>w>0);
   if(!weights.length)return null;
-  const avg=Math.round(weights.reduce((a,b)=>a+b,0)/weights.length/5)*5;
-  const loggedReps=vals.map(s=>Number(s.reps)).filter(Boolean);
-  const hitReps=loggedReps.length>0&&loggedReps.every(r=>r>=repTarget);
+  // Use max weight logged (not average) to avoid rounding erasing progress
+  const lastWeight=Math.max(...weights);
+  const loggedReps=vals.map(s=>Number(s.reps)).filter(r=>r>0);
+  // hitReps: at least half the sets have reps logged and all logged reps meet target
+  const hitReps=loggedReps.length>=Math.ceil(vals.length/2)&&loggedReps.every(r=>r>=repTarget);
+  // Consistent: if user hit target 2 sessions in a row, definitely increase
+  let suggestIncrease=hitReps;
+  if(sessions.length>=2&&!hitReps){
+    const [,prev]=sessions[1];
+    const prevSets=prev.sets[exKey]||prev.sets[groupName];
+    if(prevSets){
+      const prevReps=Object.values(prevSets).map(s=>Number(s?.reps)).filter(r=>r>0);
+      const prevWeights=Object.values(prevSets).map(s=>Number(s?.weight)).filter(w=>w>0);
+      const prevMax=prevWeights.length?Math.max(...prevWeights):0;
+      if(prevMax===lastWeight&&prevReps.length>0&&prevReps.every(r=>r>=repTarget))suggestIncrease=true;
+    }
+  }
 
   if(phase.phase==="linear"){
-    return{weight:avg,suggest:hitReps?avg+5:avg,hitReps,phase,repTargetLabel,
-      note:hitReps?"Hit target — increase weight":"Target "+repTargetLabel};
+    return{weight:lastWeight,suggest:suggestIncrease?lastWeight+5:lastWeight,hitReps:suggestIncrease,phase,repTargetLabel,
+      note:suggestIncrease?"Hit target — add 5 lbs":"Target "+repTargetLabel};
   }
   if(phase.phase==="volume"){
-    return{weight:avg,suggest:hitReps?avg+5:avg,hitReps,phase,repTargetLabel,
-      note:hitReps?"Volume target hit — increase weight":"Target "+repTargetLabel};
+    return{weight:lastWeight,suggest:suggestIncrease?lastWeight+5:lastWeight,hitReps:suggestIncrease,phase,repTargetLabel,
+      note:suggestIncrease?"Volume target hit — increase weight":"Target "+repTargetLabel};
   }
   if(phase.phase==="intensity"){
-    const intensitySuggest=Math.round((avg*1.1)/5)*5;
-    return{weight:avg,suggest:hitReps?avg+5:intensitySuggest,hitReps,phase,repTargetLabel,
-      note:hitReps?"Strength target hit — increase":"Target "+repTargetLabel+" at "+intensitySuggest+"lb"};
+    // Only apply the 10% jump if this is the first intensity session (previous session was at a lower weight)
+    // If already at intensity weight, hold until reps are hit
+    const prevWeight=sessions.length>=2?(()=>{
+      const [,prev]=sessions[1];
+      const prevSets=prev.sets[exKey]||prev.sets[groupName];
+      if(!prevSets)return null;
+      const pw=Object.values(prevSets).map(s=>Number(s?.weight)).filter(w=>w>0);
+      return pw.length?Math.max(...pw):null;
+    })():null;
+    const isFirstIntensitySession=prevWeight!=null&&prevWeight<lastWeight;
+    const intensitySuggest=isFirstIntensitySession?lastWeight:Math.ceil(lastWeight*1.1/5)*5;
+    const suggest=suggestIncrease?lastWeight+5:intensitySuggest;
+    return{weight:lastWeight,suggest,hitReps:suggestIncrease,phase,repTargetLabel,
+      note:suggestIncrease?"Strength target hit — increase":"Target "+repTargetLabel+" @ "+intensitySuggest+"lb — hold until hit"};
   }
   return null;
 }
