@@ -48,22 +48,91 @@ jobs:
           const sharp = require('sharp');
           const path = require('path');
           const fs = require('fs');
+
           const SRC = 'public/icon-512.png';
           const RES = 'android/app/src/main/res';
+
+          // Legacy icon sizes (used by older Android)
           const sizes = {
-            'mipmap-mdpi': 48, 'mipmap-hdpi': 72, 'mipmap-xhdpi': 96,
-            'mipmap-xxhdpi': 144, 'mipmap-xxxhdpi': 192
+            'mipmap-mdpi':    48,
+            'mipmap-hdpi':    72,
+            'mipmap-xhdpi':   96,
+            'mipmap-xxhdpi':  144,
+            'mipmap-xxxhdpi': 192,
           };
+
+          // Adaptive icon foreground sizes (108dp canvas per Android spec)
+          // Figure must fit within the 66dp safe zone = 61% of canvas
+          const adaptiveSizes = {
+            'mipmap-mdpi':    108,
+            'mipmap-hdpi':    162,
+            'mipmap-xhdpi':   216,
+            'mipmap-xxhdpi':  324,
+            'mipmap-xxxhdpi': 432,
+          };
+
+          const BG_COLOR = { r: 232, g: 223, b: 205, alpha: 1 };
+
           async function run() {
+            // 1. Legacy icons (plain square/round)
             for (const [dir, size] of Object.entries(sizes)) {
               const outDir = path.join(RES, dir);
               fs.mkdirSync(outDir, { recursive: true });
               await sharp(SRC).resize(size, size).toFile(path.join(outDir, 'ic_launcher.png'));
               await sharp(SRC).resize(size, size).toFile(path.join(outDir, 'ic_launcher_round.png'));
-              await sharp(SRC).resize(size, size).toFile(path.join(outDir, 'ic_launcher_foreground.png'));
-              console.log('Generated ' + dir + ' (' + size + 'x' + size + ')');
+              console.log('Legacy: ' + dir);
             }
+
+            // 2. Adaptive foreground icons — figure scaled to 61% of canvas, centred
+            for (const [dir, canvas] of Object.entries(adaptiveSizes)) {
+              const outDir = path.join(RES, dir);
+              fs.mkdirSync(outDir, { recursive: true });
+
+              const figureSize = Math.round(canvas * 0.61);
+              const offset = Math.round((canvas - figureSize) / 2);
+
+              // Resize figure
+              const figBuf = await sharp(SRC).resize(figureSize, figureSize).toBuffer();
+
+              // Composite onto beige background canvas
+              await sharp({
+                create: { width: canvas, height: canvas, channels: 4,
+                  background: BG_COLOR }
+              })
+              .composite([{ input: figBuf, top: offset, left: offset }])
+              .png()
+              .toFile(path.join(outDir, 'ic_launcher_foreground.png'));
+
+              console.log('Adaptive foreground: ' + dir + ' (' + canvas + 'px canvas)');
+            }
+
+            // 3. Adaptive icon XML (Android 8+)
+            const anydpiDir = path.join(RES, 'mipmap-anydpi-v26');
+            fs.mkdirSync(anydpiDir, { recursive: true });
+
+            const iconXml = `<?xml version="1.0" encoding="utf-8"?>
+          <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+              <background android:drawable="@color/ic_launcher_background"/>
+              <foreground android:drawable="@mipmap/ic_launcher_foreground"/>
+          </adaptive-icon>`;
+
+            fs.writeFileSync(path.join(anydpiDir, 'ic_launcher.xml'), iconXml);
+            fs.writeFileSync(path.join(anydpiDir, 'ic_launcher_round.xml'), iconXml);
+            console.log('Written adaptive icon XML');
+
+            // 4. Background colour resource
+            const valuesDir = path.join(RES, 'values');
+            fs.mkdirSync(valuesDir, { recursive: true });
+            const colorsXml = `<?xml version="1.0" encoding="utf-8"?>
+          <resources>
+              <color name="ic_launcher_background">#E8DFCD</color>
+          </resources>`;
+            fs.writeFileSync(path.join(valuesDir, 'ic_launcher_colors.xml'), colorsXml);
+            console.log('Written background color resource');
+
+            console.log('All icons generated successfully');
           }
+
           run().catch(e => { console.error(e); process.exit(1); });
           JSEOF
           node generate-icons.js
