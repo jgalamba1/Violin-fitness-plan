@@ -275,17 +275,53 @@ const CORE_MAP=[
   {label:"Deep Stabilizers",day:"Home A",color:"#5A10AA"},
 ];
 
-function getSuggestion(history,dayNum,groupName,repsStr){
+function getPhase(history){
+  const dates=Object.values(history).map(e=>e.date).filter(Boolean).sort();
+  if(!dates.length)return{phase:"linear",weekNum:0,label:null};
+  const firstDate=new Date(dates[0]);
+  const weeks=Math.floor((Date.now()-firstDate)/(1000*60*60*24*7));
+  if(weeks<26)return{phase:"linear",weekNum:weeks,label:null};
+  const blockWeek=(weeks-26)%8;
+  if(blockWeek<4){
+    return{phase:"volume",weekNum:weeks,blockWeek:blockWeek+1,label:"VOLUME PHASE — Week "+(blockWeek+1)+"/4 · higher reps, moderate weight"};
+  } else {
+    return{phase:"intensity",weekNum:weeks,blockWeek:blockWeek-3,label:"INTENSITY PHASE — Week "+(blockWeek-3)+"/4 · lower reps, heavier weight"};
+  }
+}
+
+function getSuggestion(history,dayNum,groupName,repsStr,chosenEx){
   const targetMin=parseInt(repsStr)||10;
-  for(const [,e] of Object.entries(history).sort(([a],[b])=>b-a)){
-    if(e.day!==dayNum)continue;
-    const sets=e.sets?.[groupName];if(!sets)continue;
-    const vals=Object.values(sets);
-    const weights=vals.map(s=>Number(s.weight)).filter(Boolean);
-    if(!weights.length)continue;
-    const avg=Math.round(weights.reduce((a,b)=>a+b,0)/weights.length/5)*5;
-    const hitReps=vals.map(s=>Number(s.reps)).filter(Boolean).every(r=>r>=targetMin);
-    return{weight:avg,suggest:hitReps?avg+5:avg,hitReps};
+  const phase=getPhase(history);
+  // Key by group+exercise so each exercise tracks independently
+  const exKey=chosenEx?groupName+":"+chosenEx:groupName;
+  // Fall back to old group-only key for existing history entries
+  const sessions=Object.entries(history).sort(([a],[b])=>b-a)
+    .filter(([,e])=>e.day===dayNum&&(e.sets?.[exKey]||e.sets?.[groupName]))
+    .slice(0,2);
+  if(!sessions.length)return null;
+  const [,last]=sessions[0];
+  const sets=last.sets[exKey]||last.sets[groupName];
+  const vals=Object.values(sets);
+  const weights=vals.map(s=>Number(s.weight)).filter(Boolean);
+  if(!weights.length)return null;
+  const avg=Math.round(weights.reduce((a,b)=>a+b,0)/weights.length/5)*5;
+  const hitReps=vals.map(s=>Number(s.reps)).filter(Boolean).every(r=>r>=targetMin);
+  const avgReps=vals.map(s=>Number(s.reps)).filter(Boolean).reduce((a,b)=>a+b,0)/(vals.length||1);
+
+  if(phase.phase==="linear"){
+    return{weight:avg,suggest:hitReps?avg+5:avg,hitReps,phase,
+      note:hitReps?"Hit all reps — increase weight":"Missed reps — hold weight"};
+  }
+  if(phase.phase==="volume"){
+    const volumeTarget=targetMin+3;
+    const suggest=avgReps>=volumeTarget?avg+5:avg;
+    return{weight:avg,suggest,hitReps:avgReps>=volumeTarget,phase,
+      note:avgReps>=volumeTarget?"Volume target hit — increase weight":"Build reps before adding weight"};
+  }
+  if(phase.phase==="intensity"){
+    const intensitySuggest=Math.round((avg*1.1)/5)*5;
+    return{weight:avg,suggest:hitReps?avg+5:intensitySuggest,hitReps,phase,
+      note:hitReps?"Strength target hit — increase weight":"Work up to this intensity weight"};
   }
   return null;
 }
@@ -532,11 +568,16 @@ export default function WorkoutTracker(){
           </div>
         )}
         {group.mode==="log"&&!group.cardio&&(()=>{
-          const sug=getSuggestion(history,currentDay,group.name,group.reps);
+          const sug=getSuggestion(history,currentDay,group.name,group.reps,chosen);
           return(<>
-            {sug&&<div style={{padding:"6px 10px",fontFamily:"'Space Mono',monospace",fontSize:10,marginBottom:10,background:sug.hitReps?"#3DD67A18":"#FFB8331a",borderLeft:`2px solid ${sug.hitReps?"#0A7A2A":"#AA6800"}`,color:sug.hitReps?"#0A7A2A":"#AA6800"}}>
-              {sug.hitReps?"⬆":"→"} Suggested: {sug.suggest} lbs {sug.hitReps?"(hit all reps — increase)":"(missed reps — hold)"}
-            </div>}
+            {sug&&(
+              <div style={{marginBottom:10}}>
+                {sug.phase?.label&&<div style={{padding:"4px 10px",fontFamily:"'Space Mono',monospace",fontSize:9,letterSpacing:".1em",background:"#0A40AA12",borderLeft:"2px solid #0A40AA",color:"#0A40AA",marginBottom:4}}>{sug.phase.label}</div>}
+                <div style={{padding:"6px 10px",fontFamily:"'Space Mono',monospace",fontSize:10,background:sug.hitReps?"#3DD67A18":"#FFB8331a",borderLeft:`2px solid ${sug.hitReps?"#0A7A2A":"#AA6800"}`,color:sug.hitReps?"#0A7A2A":"#AA6800"}}>
+                  {sug.hitReps?"⬆":"→"} Suggested: {sug.suggest} lbs · {sug.note}
+                </div>
+              </div>
+            )}
             <div style={{display:"grid",gridTemplateColumns:"28px 1fr 1fr",gap:5,marginBottom:6}}>
               {["SET","WEIGHT (lbs)","REPS"].map(h=><div key={h} style={{color:"#6A5A3A",fontSize:9,letterSpacing:".1em",fontFamily:"'Space Mono',monospace"}}>{h}</div>)}
             </div>
@@ -544,9 +585,9 @@ export default function WorkoutTracker(){
               <div key={i} style={{display:"grid",gridTemplateColumns:"28px 1fr 1fr",gap:5,marginBottom:4,alignItems:"center"}}>
                 <div style={{color:"#6A5A3A",fontSize:11,textAlign:"center",fontFamily:"'Space Mono',monospace"}}>{i+1}</div>
                 <input style={{background:"#C8BBA0",border:"1px solid #1c1c1c",color:"#0A0806",padding:"8px 10px",fontFamily:"'Space Mono',monospace",fontSize:13,width:"100%",outline:"none"}}
-                  type="number" placeholder={sug?String(sug.suggest):"—"} value={sessionData[group.name]?.[i]?.weight||""} onChange={e=>updateSet(group.name,i,"weight",e.target.value)}/>
+                  type="number" placeholder={sug?String(sug.suggest):"—"} value={sessionData[group.name]?.[i]?.weight||""} onChange={e=>updateSet(chosen?group.name+":"+chosen:group.name,i,"weight",e.target.value)}/>
                 <input style={{background:"#C8BBA0",border:"1px solid #1c1c1c",color:"#0A0806",padding:"8px 10px",fontFamily:"'Space Mono',monospace",fontSize:13,width:"100%",outline:"none"}}
-                  type="number" placeholder={group.reps.split(/[–—]/)[0]} value={sessionData[group.name]?.[i]?.reps||""} onChange={e=>updateSet(group.name,i,"reps",e.target.value)}/>
+                  type="number" placeholder={group.reps.split(/[–—]/)[0]} value={sessionData[group.name]?.[i]?.reps||""} onChange={e=>updateSet(chosen?group.name+":"+chosen:group.name,i,"reps",e.target.value)}/>
               </div>
             ))}
           </>);
