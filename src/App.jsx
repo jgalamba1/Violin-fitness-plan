@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { Haptics, ImpactStyle, NotificationType } from "@capacitor/haptics";
 
 // ── Storage helpers (localStorage, works in Capacitor/Android) ────────────────
 const store = {
@@ -337,8 +338,19 @@ export default function WorkoutTracker(){
   const [timer, setTimer] = useState(null); // {seconds, total, label, running}
   const timerRef = useRef(null);
 
-  const vibrate = useCallback((pattern) => {
-    try { if(navigator.vibrate) navigator.vibrate(pattern); } catch {}
+  const vibrate = useCallback(async (type) => {
+    try {
+      if (type === 'warning') {
+        await Haptics.impact({ style: ImpactStyle.Medium });
+      } else if (type === 'done') {
+        await Haptics.notification({ type: NotificationType.Success });
+      } else if (type === 'tick') {
+        await Haptics.impact({ style: ImpactStyle.Light });
+      }
+    } catch {
+      // Fallback for browser preview
+      try { if(navigator.vibrate) navigator.vibrate(type === 'done' ? [200,100,200,100,400] : 80); } catch {}
+    }
   }, []);
 
   const startTimer = useCallback((seconds, label) => {
@@ -349,11 +361,11 @@ export default function WorkoutTracker(){
         if(!t||!t.running) return t;
         if(t.seconds <= 1) {
           clearInterval(timerRef.current);
-          try { if(navigator.vibrate) navigator.vibrate([200,100,200,100,400]); } catch {}
+          vibrate('done');
           return {...t, seconds:0, running:false};
         }
         if(t.seconds === 4) {
-          try { if(navigator.vibrate) navigator.vibrate(80); } catch {}
+          vibrate('warning');
         }
         return {...t, seconds:t.seconds-1};
       });
