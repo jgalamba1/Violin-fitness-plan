@@ -1,6 +1,6 @@
 # 🎻 Violin Gym Tracker
 
-A workout tracking app for violinists, built with React + Capacitor.
+A workout tracking app for violinists using Planet Fitness equipment, built with React + Capacitor. Includes a progression for lower body flexibility towards being able to do a full lotus position. 
 
 ## Building the Android APK via GitHub Actions
 
