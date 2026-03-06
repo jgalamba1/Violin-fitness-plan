@@ -27,9 +27,6 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Install sharp (needed for asset generation)
-        run: npm install -g sharp-cli
-
       - name: Build web app
         run: npm run build
 
@@ -42,38 +39,41 @@ jobs:
       - name: Sync Capacitor
         run: npx cap sync android
 
-      - name: Generate Android icon sizes
+      - name: Install sharp for icon generation
+        run: npm install sharp
+
+      - name: Generate Android icons
         run: |
-          install_icons() {
-            SRC="public/icon-512.png"
-            RES="android/app/src/main/res"
+          node << 'NODESCRIPT'
+          const sharp = require('sharp');
+          const path = require('path');
+          const fs = require('fs');
 
-            declare -A SIZES=(
-              ["mipmap-mdpi"]=48
-              ["mipmap-hdpi"]=72
-              ["mipmap-xhdpi"]=96
-              ["mipmap-xxhdpi"]=144
-              ["mipmap-xxxhdpi"]=192
-            )
+          const SRC = 'public/icon-512.png';
+          const RES = 'android/app/src/main/res';
 
-            for DIR in "${!SIZES[@]}"; do
-              SIZE="${SIZES[$DIR]}"
-              mkdir -p "$RES/$DIR"
-              node -e "
-                const sharp = require('sharp');
-                sharp('$SRC')
-                  .resize($SIZE, $SIZE)
-                  .toFile('$RES/$DIR/ic_launcher.png')
-                  .then(() => sharp('$SRC')
-                    .resize($SIZE, $SIZE)
-                    .toFile('$RES/$DIR/ic_launcher_round.png'))
-                  .then(() => console.log('Generated $DIR'))
-                  .catch(e => { console.error(e); process.exit(1); });
-              "
-            done
+          const sizes = {
+            'mipmap-mdpi':    48,
+            'mipmap-hdpi':    72,
+            'mipmap-xhdpi':   96,
+            'mipmap-xxhdpi':  144,
+            'mipmap-xxxhdpi': 192,
+          };
+
+          async function run() {
+            for (const [dir, size] of Object.entries(sizes)) {
+              const outDir = path.join(RES, dir);
+              fs.mkdirSync(outDir, { recursive: true });
+              await sharp(SRC).resize(size, size).toFile(path.join(outDir, 'ic_launcher.png'));
+              await sharp(SRC).resize(size, size).toFile(path.join(outDir, 'ic_launcher_round.png'));
+              await sharp(SRC).resize(size, size).toFile(path.join(outDir, 'ic_launcher_foreground.png'));
+              console.log(`Generated ${dir} (${size}x${size})`);
+            }
+            console.log('All icons generated successfully');
           }
-          npm install sharp
-          install_icons
+
+          run().catch(e => { console.error(e); process.exit(1); });
+          NODESCRIPT
 
       - name: Set up Android SDK
         run: |
