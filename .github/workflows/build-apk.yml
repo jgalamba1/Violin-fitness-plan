@@ -27,6 +27,9 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Install sharp (needed for asset generation)
+        run: npm install -g sharp-cli
+
       - name: Build web app
         run: npm run build
 
@@ -38,6 +41,39 @@ jobs:
 
       - name: Sync Capacitor
         run: npx cap sync android
+
+      - name: Generate Android icon sizes
+        run: |
+          install_icons() {
+            SRC="public/icon-512.png"
+            RES="android/app/src/main/res"
+
+            declare -A SIZES=(
+              ["mipmap-mdpi"]=48
+              ["mipmap-hdpi"]=72
+              ["mipmap-xhdpi"]=96
+              ["mipmap-xxhdpi"]=144
+              ["mipmap-xxxhdpi"]=192
+            )
+
+            for DIR in "${!SIZES[@]}"; do
+              SIZE="${SIZES[$DIR]}"
+              mkdir -p "$RES/$DIR"
+              node -e "
+                const sharp = require('sharp');
+                sharp('$SRC')
+                  .resize($SIZE, $SIZE)
+                  .toFile('$RES/$DIR/ic_launcher.png')
+                  .then(() => sharp('$SRC')
+                    .resize($SIZE, $SIZE)
+                    .toFile('$RES/$DIR/ic_launcher_round.png'))
+                  .then(() => console.log('Generated $DIR'))
+                  .catch(e => { console.error(e); process.exit(1); });
+              "
+            done
+          }
+          npm install sharp
+          install_icons
 
       - name: Set up Android SDK
         run: |
