@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 
 // ── Storage helpers (localStorage, works in Capacitor/Android) ────────────────
 const store = {
@@ -175,7 +175,7 @@ const CARDIO_GROUP = {name:"Cardio — Zone 2",cardio:true,mode:"cardio",exercis
 const LEG_PRESS_BACK_GROUP = {name:"Lower Back — Auto Added",autoAdded:true,mode:"log",sets:3,reps:"12–15",exercises:["Back Extension Machine (hyperextension)","Smith Machine Good Morning","45-degree Back Extension (bodyweight)"]};
 
 const DAYS = {
-  1:{type:"gym",label:"GYM DAY 1",subtitle:"Push + Squat + Core A + Cardio",color:"#E84A2E",groups:[
+  1:{type:"gym",label:"GYM DAY 1",subtitle:"Push + Squat + Core A + Cardio",color:"#AA2A0A",groups:[
     {name:"Squat Pattern",supersetId:"A",supersetRest:"90 sec",mode:"log",sets:4,reps:"6–8",exercises:["Smith Machine Back Squat","Smith Machine Front Squat","Leg Press (feet high)"]},
     {name:"Horizontal Push",supersetId:"A",mode:"log",sets:4,reps:"6–8",exercises:["Smith Machine Incline Press","Smith Machine Flat Press","Dumbbell Incline Press","Chest Dip (lean forward, max 90°)"]},
     {name:"Single-Leg Strength",supersetId:"B",supersetRest:"75 sec",mode:"log",sets:3,reps:"8–10",exercises:["Bulgarian Split Squat (DB)","Dumbbell Reverse Lunge","Step-Up onto bench (DB)"]},
@@ -185,7 +185,7 @@ const DAYS = {
     {name:"Core — Anti-Extension",core:true,mode:"log",sets:3,reps:"45 sec",exercises:["Plank","RKC Plank (squeeze everything)","Ab Wheel Rollout"]},
     CARDIO_GROUP,
   ]},
-  2:{type:"gym",label:"GYM DAY 2",subtitle:"Pull + Violin Priority + Core B",color:"#2E7DE8",groups:[
+  2:{type:"gym",label:"GYM DAY 2",subtitle:"Pull + Violin Priority + Core B",color:"#0A40AA",groups:[
     {name:"Vertical Pull",supersetId:"A",supersetRest:"90 sec",mode:"log",sets:4,reps:"6–8",exercises:["Lat Pulldown","Assisted Pull-Up Machine","Single-Arm Cable Pulldown"]},
     {name:"Serratus Anterior",supersetId:"A",violin:true,mode:"log",sets:4,reps:"12–15",exercises:["Single-Arm Cable Serratus Punch","Cable Serratus Press","Cable Pullover (cable set high, arc down)","Dumbbell Pullover (flat bench, controlled)"]},
     {name:"Horizontal Pull — Mid Trap",supersetId:"B",violin:true,supersetRest:"75 sec",mode:"log",sets:4,reps:"10–12",exercises:["Low Cable Row (elbows flared)","Seated Cable Row (wide grip)","Dumbbell Chest-Supported Row"]},
@@ -195,7 +195,7 @@ const DAYS = {
     {name:"Lower Trap & Scapular Stability",violin:true,violinStraight:true,violinRest:"45–50 sec",mode:"log",sets:4,reps:"10 each",exercises:["Y-T-W on Incline Bench (light DB)","Cable Y-Raise","Prone Y-T-W on incline bench"]},
     {name:"Core — Anti-Rotation",core:true,mode:"log",sets:3,reps:"10 each",exercises:["Pallof Press (cable, both sides)","Pallof Press with Rotation","Half-Kneeling Cable Chop"]},
   ]},
-  3:{type:"gym",label:"GYM DAY 3",subtitle:"Lower Body + Core C + Cardio",color:"#2EBD6B",groups:[
+  3:{type:"gym",label:"GYM DAY 3",subtitle:"Lower Body + Core C + Cardio",color:"#0A7A2A",groups:[
     {name:"Hip Hinge",supersetId:"A",supersetRest:"90 sec",mode:"log",sets:4,reps:"8–10",exercises:["Romanian Deadlift (Smith or DB)","Smith Machine Conventional Deadlift","Dumbbell Single-Leg RDL"]},
     {name:"Quad Accessory",supersetId:"A",mode:"log",sets:3,reps:"12–15",exercises:["Leg Extension Machine","Smith Machine Split Squat (lighter, higher rep)"]},
     {name:"Hamstring Isolation",supersetId:"B",supersetRest:"75 sec",mode:"log",sets:3,reps:"10–12",exercises:["Leg Curl Machine","Single-Leg Curl Machine"]},
@@ -205,7 +205,7 @@ const DAYS = {
     {name:"Calf",mode:"log",sets:3,reps:"15–20",exercises:["Standing Calf Raise Machine","Seated Calf Raise Machine"]},
     CARDIO_GROUP,
   ]},
-  4:{type:"home",label:"HOME DAY A",subtitle:"Violin Health + Flexibility",color:"#A855F7",groups:[
+  4:{type:"home",label:"HOME DAY A",subtitle:"Violin Health + Flexibility",color:"#5A10AA",groups:[
     {name:"Serratus Anterior",violin:true,mode:"reps",sets:3,reps:"12",exercises:["Serratus Wall Slide","Scapular Push-Up","Bear Crawl Hold with scapular protraction"]},
     {name:"Lower & Mid Trapezius",violin:true,mode:"reps",sets:3,reps:"10 each",exercises:["Floor Y-T-W (prone)","Superman hold with Y-arms","Wall Angel"]},
     {name:"Rotator Cuff",violin:true,mode:"reps",sets:3,reps:"15–20",exercises:["Band Pull-Apart","Side-Lying External Rotation (no weight)","Prone External Rotation"]},
@@ -216,7 +216,7 @@ const DAYS = {
     {name:"Flexibility — Violin Priority 🎻",violin:true,mode:"check",duration:"30–45 sec each",exercises:["Upper Trap Stretch","Levator Scapulae Stretch","Pec Minor Stretch (doorway)","Wrist Flexor Stretch","Wrist Extensor Stretch"]},
     {name:"Flexibility — Upper Body",mode:"check",duration:"30–45 sec each",exercises:["Lat Stretch","Thoracic Rotation Stretch","Thread the Needle","Neck Side Bend"]},
   ]},
-  5:{type:"home",label:"HOME DAY B",subtitle:"Active Recovery + Full Body Flexibility",color:"#F59E0B",groups:[
+  5:{type:"home",label:"HOME DAY B",subtitle:"Active Recovery + Full Body Flexibility",color:"#AA6A00",groups:[
     {name:"Violin Mobility",violin:true,mode:"reps",sets:2,reps:"10 each",exercises:["Serratus Wall Slide","Floor Y-T-W (prone)","Chin Tuck against wall","Band Pull-Apart"]},
     {name:"Core — Deep Stabilizers",core:true,mode:"reps",sets:2,reps:"8 each",exercises:["Dead Bug","Bird Dog"]},
     {name:"Lower Body",mode:"reps",sets:2,reps:"12 each",exercises:["Reverse Lunge (bodyweight)","Lateral Lunge","Single-Leg Glute Bridge","Side-Lying Hip Abduction","Clamshell"]},
@@ -224,28 +224,28 @@ const DAYS = {
     {name:"Flexibility — Lower Body",mode:"check",duration:"45 sec each",exercises:["Hip Flexor Stretch (couch stretch)","Hamstring Stretch (standing)","Piriformis Stretch (figure-4)"]},
     {name:"Flexibility — Full Body",mode:"check",duration:"30–45 sec",exercises:["Cat-Cow","Child's Pose","Neck Side Bend"]},
   ]},
-  6:{type:"home",label:"HOME DAY C",subtitle:"Lotus Progression",color:"#E84A2E",
+  6:{type:"home",label:"HOME DAY C",subtitle:"Lotus Progression",color:"#AA2A0A",
     lotusPhases:[
-      {phase:1,label:"Phase 1 — Foundation",note:"Months 1–2. Build the base. Do all of these before moving to Phase 2. Target: each stretch feels comfortable for 90 sec holds.",color:"#555",exercises:[
+      {phase:1,label:"Phase 1 — Foundation",note:"Months 1–2. Build the base. Do all of these before moving to Phase 2. Target: each stretch feels comfortable for 90 sec holds.",color:"#3A2A12",exercises:[
         {name:"Reclined Figure-4 (supine pigeon)",duration:"90 sec each side"},
         {name:"Butterfly Stretch",duration:"90 sec"},
         {name:"Low Lunge (hip flexor focus)",duration:"60 sec each side"},
         {name:"Seated Forward Fold",duration:"90 sec"},
         {name:"Ankle Circles and Plantarflexion",duration:"30 sec each foot"},
       ]},
-      {phase:2,label:"Phase 2 — Building",note:"Months 2–4. Add these once Phase 1 is comfortable. Target: pigeon is relaxed and painless for 2 min.",color:"#E84A2E",exercises:[
+      {phase:2,label:"Phase 2 — Building",note:"Months 2–4. Add these once Phase 1 is comfortable. Target: pigeon is relaxed and painless for 2 min.",color:"#AA2A0A",exercises:[
         {name:"Thread the Needle (hip version)",duration:"90 sec each side"},
         {name:"Pigeon Pose",duration:"2 min each side"},
         {name:"Gomukhasana (cow face legs)",duration:"90 sec each side"},
         {name:"Butterfly Stretch",duration:"2 min"},
       ]},
-      {phase:3,label:"Phase 3 — Half Lotus",note:"Months 4–8. Only begin when pigeon is completely comfortable. Target: half lotus hold for 3+ min on both sides.",color:"#2E7DE8",exercises:[
+      {phase:3,label:"Phase 3 — Half Lotus",note:"Months 4–8. Only begin when pigeon is completely comfortable. Target: half lotus hold for 3+ min on both sides.",color:"#0A40AA",exercises:[
         {name:"Double Pigeon (fire log pose)",duration:"2 min each side"},
         {name:"Half Lotus Prep (supported)",duration:"2 min each side"},
         {name:"Supported Half Lotus Hold",duration:"3 min each side"},
         {name:"Half Lotus Seated Hold",duration:"3–5 min each side"},
       ]},
-      {phase:4,label:"Phase 4 — Full Lotus",note:"Months 8+. Only attempt after equal, comfortable half lotus on both sides. There is no rush. Knee pain = stop.",color:"#2EBD6B",exercises:[
+      {phase:4,label:"Phase 4 — Full Lotus",note:"Months 8+. Only attempt after equal, comfortable half lotus on both sides. There is no rush. Knee pain = stop.",color:"#0A7A2A",exercises:[
         {name:"Full Lotus Attempt (supported)",duration:"30–60 sec each leg on top"},
         {name:"Full Lotus Hold",duration:"Build to 5 min"},
       ]},
@@ -254,12 +254,12 @@ const DAYS = {
 };
 
 const CORE_MAP=[
-  {label:"Flexion",day:"Day 1",color:"#E84A2E"},
-  {label:"Anti-Extension",day:"Day 1",color:"#E84A2E"},
-  {label:"Anti-Rotation",day:"Day 2",color:"#2E7DE8"},
-  {label:"Rotation",day:"Day 3",color:"#2EBD6B"},
-  {label:"Lateral Stability",day:"Day 3",color:"#2EBD6B"},
-  {label:"Deep Stabilizers",day:"Home A",color:"#A855F7"},
+  {label:"Flexion",day:"Day 1",color:"#AA2A0A"},
+  {label:"Anti-Extension",day:"Day 1",color:"#AA2A0A"},
+  {label:"Anti-Rotation",day:"Day 2",color:"#0A40AA"},
+  {label:"Rotation",day:"Day 3",color:"#0A7A2A"},
+  {label:"Lateral Stability",day:"Day 3",color:"#0A7A2A"},
+  {label:"Deep Stabilizers",day:"Home A",color:"#5A10AA"},
 ];
 
 function getSuggestion(history,dayNum,groupName,repsStr){
@@ -333,29 +333,71 @@ export default function WorkoutTracker(){
   const [cycle, setCycle] = useState({start:null, done:[]});
   const [lotusLast, setLotusLast] = useState(null);
 
-  useEffect(()=>{
-    try{
-      const d=store.get("cur_day_v8");
-      const h=store.get("hist_v8");
-      const c=store.get("cycle_v1");
-      const ll=store.get("lotus_last_v1");
-      if(d)setCurrentDay(Number(d));
-      if(h)setHistory(JSON.parse(h));
-      if(ll)setLotusLast(Number(ll));
-      if(c){
-        const parsed=JSON.parse(c);
-        const elapsed=(Date.now()-parsed.start)/(1000*60*60*24);
-        if(parsed.done.length>=5||elapsed>=10){
-          // Auto-reset expired cycle
-          const fresh={start:null,done:[]};
-          setCycle(fresh);
-          store.set("cycle_v1",JSON.stringify(fresh));
-        } else {
-          setCycle(parsed);
+  // ── Rest timer ────────────────────────────────────────────────────────────
+  const [timer, setTimer] = useState(null); // {seconds, total, label, running}
+  const timerRef = useRef(null);
+
+  const vibrate = useCallback((pattern) => {
+    try { if(navigator.vibrate) navigator.vibrate(pattern); } catch {}
+  }, []);
+
+  const startTimer = useCallback((seconds, label) => {
+    clearInterval(timerRef.current);
+    setTimer({seconds, total:seconds, label, running:true});
+    timerRef.current = setInterval(() => {
+      setTimer(t => {
+        if(!t||!t.running) return t;
+        if(t.seconds <= 1) {
+          clearInterval(timerRef.current);
+          try { if(navigator.vibrate) navigator.vibrate([200,100,200,100,400]); } catch {}
+          return {...t, seconds:0, running:false};
         }
-      }
-    }catch{}
-    setLoading(false);
+        if(t.seconds === 4) {
+          try { if(navigator.vibrate) navigator.vibrate(80); } catch {}
+        }
+        return {...t, seconds:t.seconds-1};
+      });
+    }, 1000);
+  }, []);
+
+  const stopTimer = useCallback(() => {
+    clearInterval(timerRef.current);
+    setTimer(null);
+  }, []);
+
+  useEffect(() => () => clearInterval(timerRef.current), []);
+
+  // Parse rest string like "90 sec", "45–50 sec" -> seconds
+  const parseRest = (restStr) => {
+    if(!restStr) return 90;
+    const m = restStr.match(/([0-9]+)/);
+    return m ? parseInt(m[1]) : 90;
+  };
+
+  useEffect(()=>{
+    (async()=>{
+      try{
+        const d=await store.get("cur_day_v8");
+        const h=await store.get("hist_v8");
+        const c=await store.get("cycle_v1");
+        const ll=await store.get("lotus_last_v1");
+        if(d)setCurrentDay(Number(d));
+        if(h)setHistory(JSON.parse(h));
+        if(ll)setLotusLast(Number(ll));
+        if(c){
+          const parsed=JSON.parse(c);
+          const elapsed=(Date.now()-parsed.start)/(1000*60*60*24);
+          if(parsed.done.length>=5||elapsed>=10){
+            const fresh={start:null,done:[]};
+            setCycle(fresh);
+            await store.set("cycle_v1",JSON.stringify(fresh));
+          } else {
+            setCycle(parsed);
+          }
+        }
+      }catch{}
+      setLoading(false);
+    })();
   },[]);
 
   const updateSet=(g,i,field,val)=>setSessionData(p=>({...p,[g]:{...p[g],[i]:{...(p[g]?.[i]||{}),[field]:val}}}));
@@ -404,7 +446,36 @@ export default function WorkoutTracker(){
   };
 
   const day=DAYS[currentDay];
-  if(loading)return <div style={{background:"#080808",minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"monospace",color:"#222",letterSpacing:".3em",fontSize:11}}>LOADING...</div>;
+
+  const renderTimerButton = (restStr, label) => {
+    const secs = parseRest(restStr);
+    const active = timer && timer.label === label;
+    return (
+      <button
+        onClick={()=> active ? stopTimer() : startTimer(secs, label)}
+        style={{
+          background: active ? (timer.running ? "#AA6800" : "#0A7A2A") : "#BFB298",
+          border: `1px solid ${active ? (timer.running ? "#AA6800" : "#0A7A2A") : "#BFB298"}`,
+          color: active ? "#000" : "#5A4A2E",
+          padding:"5px 12px",
+          fontFamily:"'Space Mono',monospace",
+          fontSize:10,
+          cursor:"pointer",
+          letterSpacing:".08em",
+          display:"flex",
+          alignItems:"center",
+          gap:6,
+          flexShrink:0,
+        }}>
+        {active
+          ? (timer.running
+              ? `⏱ ${timer.seconds}s`
+              : "✓ DONE — tap to clear")
+          : `⏱ REST ${restStr||"90 sec"}`}
+      </button>
+    );
+  };
+  if(loading)return <div style={{background:"#E8DFCD",minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"monospace",color:"#6A5A3A",letterSpacing:".3em",fontSize:11}}>LOADING...</div>;
 
   const renderGroupContent=(group)=>{
     const chosen=selectedEx[group.name]||group.exercises[0];
@@ -413,23 +484,23 @@ export default function WorkoutTracker(){
       <div style={{paddingBottom:4}}>
         {group.mode!=="check"&&!group.cardio&&(
           <div style={{marginBottom:12}}>
-            <div style={{color:"#252525",fontSize:9,letterSpacing:".2em",fontFamily:"'Space Mono',monospace",marginBottom:6}}>SELECT EXERCISE</div>
+            <div style={{color:"#6A5A3A",fontSize:9,letterSpacing:".2em",fontFamily:"'Space Mono',monospace",marginBottom:6}}>SELECT EXERCISE</div>
             {group.exercises.map(ex=>(
               <div key={ex} style={{display:"flex",gap:5,marginBottom:3}}>
-                <button style={{background:"none",border:`1px solid ${chosen===ex?day.color+"50":"#161616"}`,color:chosen===ex?day.color:"#3c3c3c",padding:"8px 11px",fontFamily:"'Space Mono',monospace",fontSize:10,cursor:"pointer",flex:1,textAlign:"left",marginBottom:0}}
+                <button style={{background:"none",border:`1px solid ${chosen===ex?day.color+"50":"#BFB298"}`,color:chosen===ex?day.color:"#3c3c3c",padding:"8px 11px",fontFamily:"'Space Mono',monospace",fontSize:10,cursor:"pointer",flex:1,textAlign:"left",marginBottom:0}}
                   onClick={()=>setSelectedEx(p=>({...p,[group.name]:ex}))}>
                   {chosen===ex?"▶  ":"    "}{ex}
                 </button>
-                <button onClick={()=>setInfoEx(ex)} style={{background:"none",border:"1px solid #181818",color:"#383838",width:28,cursor:"pointer",fontSize:11,flexShrink:0,fontFamily:"'Space Mono',monospace"}}
-                  onMouseEnter={e=>{e.currentTarget.style.color="#888";e.currentTarget.style.borderColor="#333"}}
-                  onMouseLeave={e=>{e.currentTarget.style.color="#383838";e.currentTarget.style.borderColor="#181818"}}>ℹ</button>
+                <button onClick={()=>setInfoEx(ex)} style={{background:"none",border:"1px solid #181818",color:"#6A5A3A",width:28,cursor:"pointer",fontSize:11,flexShrink:0,fontFamily:"'Space Mono',monospace"}}
+                  onMouseEnter={e=>{e.currentTarget.style.color="#2A1E0E";e.currentTarget.style.borderColor="#6A5A3A"}}
+                  onMouseLeave={e=>{e.currentTarget.style.color="#6A5A3A";e.currentTarget.style.borderColor="#BFB298"}}>ℹ</button>
               </div>
             ))}
           </div>
         )}
         {group.mode!=="check"&&!group.cardio&&exInfo&&(
-          <div style={{background:"#0c0c0c",border:"1px solid #1a1a1a",padding:"10px 12px",marginBottom:12}}>
-            <div style={{color:"#555",fontSize:10,fontFamily:"'Space Mono',monospace",lineHeight:1.6,marginBottom:7}}>{exInfo[0]}</div>
+          <div style={{background:"#D4C9B0",border:"1px solid #1a1a1a",padding:"10px 12px",marginBottom:12}}>
+            <div style={{color:"#3A2A12",fontSize:10,fontFamily:"'Space Mono',monospace",lineHeight:1.6,marginBottom:7}}>{exInfo[0]}</div>
             <a style={{background:"none",border:"1px solid #900",color:"#c00",padding:"4px 10px",fontFamily:"'Space Mono',monospace",fontSize:10,cursor:"pointer",textDecoration:"none",display:"inline-block"}}
               href={exInfo[1]} target="_blank" rel="noreferrer">▶ WATCH</a>
           </div>
@@ -437,18 +508,18 @@ export default function WorkoutTracker(){
         {group.mode==="log"&&!group.cardio&&(()=>{
           const sug=getSuggestion(history,currentDay,group.name,group.reps);
           return(<>
-            {sug&&<div style={{padding:"6px 10px",fontFamily:"'Space Mono',monospace",fontSize:10,marginBottom:10,background:sug.hitReps?"#2EBD6B12":"#E8A82E12",borderLeft:`2px solid ${sug.hitReps?"#2EBD6B":"#E8A82E"}`,color:sug.hitReps?"#2EBD6B":"#E8A82E"}}>
+            {sug&&<div style={{padding:"6px 10px",fontFamily:"'Space Mono',monospace",fontSize:10,marginBottom:10,background:sug.hitReps?"#3DD67A18":"#FFB8331a",borderLeft:`2px solid ${sug.hitReps?"#0A7A2A":"#AA6800"}`,color:sug.hitReps?"#0A7A2A":"#AA6800"}}>
               {sug.hitReps?"⬆":"→"} Suggested: {sug.suggest} lbs {sug.hitReps?"(hit all reps — increase)":"(missed reps — hold)"}
             </div>}
             <div style={{display:"grid",gridTemplateColumns:"28px 1fr 1fr",gap:5,marginBottom:6}}>
-              {["SET","WEIGHT (lbs)","REPS"].map(h=><div key={h} style={{color:"#222",fontSize:9,letterSpacing:".1em",fontFamily:"'Space Mono',monospace"}}>{h}</div>)}
+              {["SET","WEIGHT (lbs)","REPS"].map(h=><div key={h} style={{color:"#6A5A3A",fontSize:9,letterSpacing:".1em",fontFamily:"'Space Mono',monospace"}}>{h}</div>)}
             </div>
             {Array.from({length:group.sets}).map((_,i)=>(
               <div key={i} style={{display:"grid",gridTemplateColumns:"28px 1fr 1fr",gap:5,marginBottom:4,alignItems:"center"}}>
-                <div style={{color:"#2a2a2a",fontSize:11,textAlign:"center",fontFamily:"'Space Mono',monospace"}}>{i+1}</div>
-                <input style={{background:"#0d0d0d",border:"1px solid #1c1c1c",color:"#c8c8c8",padding:"8px 10px",fontFamily:"'Space Mono',monospace",fontSize:13,width:"100%",outline:"none"}}
+                <div style={{color:"#6A5A3A",fontSize:11,textAlign:"center",fontFamily:"'Space Mono',monospace"}}>{i+1}</div>
+                <input style={{background:"#C8BBA0",border:"1px solid #1c1c1c",color:"#0A0806",padding:"8px 10px",fontFamily:"'Space Mono',monospace",fontSize:13,width:"100%",outline:"none"}}
                   type="number" placeholder={sug?String(sug.suggest):"—"} value={sessionData[group.name]?.[i]?.weight||""} onChange={e=>updateSet(group.name,i,"weight",e.target.value)}/>
-                <input style={{background:"#0d0d0d",border:"1px solid #1c1c1c",color:"#c8c8c8",padding:"8px 10px",fontFamily:"'Space Mono',monospace",fontSize:13,width:"100%",outline:"none"}}
+                <input style={{background:"#C8BBA0",border:"1px solid #1c1c1c",color:"#0A0806",padding:"8px 10px",fontFamily:"'Space Mono',monospace",fontSize:13,width:"100%",outline:"none"}}
                   type="number" placeholder={group.reps.split(/[–—]/)[0]} value={sessionData[group.name]?.[i]?.reps||""} onChange={e=>updateSet(group.name,i,"reps",e.target.value)}/>
               </div>
             ))}
@@ -457,14 +528,14 @@ export default function WorkoutTracker(){
         {group.mode==="reps"&&(()=>{
           const lr=getLastReps(history,currentDay,group.name);
           return(<>
-            {lr&&<div style={{color:"#333",fontSize:10,fontFamily:"'Space Mono',monospace",marginBottom:7}}>↑ last: {lr} reps</div>}
+            {lr&&<div style={{color:"#6A5A3A",fontSize:10,fontFamily:"'Space Mono',monospace",marginBottom:7}}>↑ last: {lr} reps</div>}
             <div style={{display:"grid",gridTemplateColumns:"28px 1fr",gap:5,marginBottom:6}}>
-              {["SET","REPS"].map(h=><div key={h} style={{color:"#222",fontSize:9,letterSpacing:".1em",fontFamily:"'Space Mono',monospace"}}>{h}</div>)}
+              {["SET","REPS"].map(h=><div key={h} style={{color:"#6A5A3A",fontSize:9,letterSpacing:".1em",fontFamily:"'Space Mono',monospace"}}>{h}</div>)}
             </div>
             {Array.from({length:group.sets}).map((_,i)=>(
               <div key={i} style={{display:"grid",gridTemplateColumns:"28px 1fr",gap:5,marginBottom:4,alignItems:"center"}}>
-                <div style={{color:"#2a2a2a",fontSize:11,textAlign:"center",fontFamily:"'Space Mono',monospace"}}>{i+1}</div>
-                <input style={{background:"#0d0d0d",border:"1px solid #1c1c1c",color:"#c8c8c8",padding:"8px 10px",fontFamily:"'Space Mono',monospace",fontSize:13,width:"100%",outline:"none"}}
+                <div style={{color:"#6A5A3A",fontSize:11,textAlign:"center",fontFamily:"'Space Mono',monospace"}}>{i+1}</div>
+                <input style={{background:"#C8BBA0",border:"1px solid #1c1c1c",color:"#0A0806",padding:"8px 10px",fontFamily:"'Space Mono',monospace",fontSize:13,width:"100%",outline:"none"}}
                   type="number" placeholder={group.reps.split(/[–—]/)[0]} value={sessionData[group.name]?.[i]?.reps||""} onChange={e=>updateReps(group.name,i,e.target.value)}/>
               </div>
             ))}
@@ -472,24 +543,24 @@ export default function WorkoutTracker(){
         })()}
         {group.mode==="check"&&(
           <div>
-            <div style={{color:"#252525",fontSize:9,letterSpacing:".2em",fontFamily:"'Space Mono',monospace",marginBottom:9}}>MARK COMPLETE · {group.duration}</div>
+            <div style={{color:"#6A5A3A",fontSize:9,letterSpacing:".2em",fontFamily:"'Space Mono',monospace",marginBottom:9}}>MARK COMPLETE · {group.duration}</div>
             {group.exercises.map(ex=>{
               const done=!!(sessionData[group.name]?.[ex]);
               const exI=INFO[ex];
               return(
                 <div key={ex} style={{borderBottom:"1px solid #0f0f0f",paddingBottom:9,marginBottom:9}}>
                   <div style={{display:"flex",alignItems:"flex-start",gap:9}}>
-                    <div style={{width:17,height:17,border:`1px solid ${done?day.color:"#262626"}`,background:done?day.color+"22":"#0c0c0c",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,marginTop:1}}
+                    <div style={{width:17,height:17,border:`1px solid ${done?day.color:"#262626"}`,background:done?day.color+"22":"#D4C9B0",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,marginTop:1}}
                       onClick={()=>toggleCheck(group.name,ex)}>
                       {done&&<span style={{color:day.color,fontSize:10}}>✓</span>}
                     </div>
                     <div style={{flex:1}}>
                       <div style={{display:"flex",alignItems:"center",gap:7,flexWrap:"wrap"}}>
-                        <span style={{color:done?"#444":"#bbb",fontSize:11,fontFamily:"'Space Mono',monospace",textDecoration:done?"line-through":"none"}}>{ex}</span>
-                        {exI&&<button onClick={()=>setInfoEx(ex)} style={{background:"none",border:"1px solid #181818",color:"#383838",padding:"1px 6px",cursor:"pointer",fontSize:10,fontFamily:"'Space Mono',monospace"}}
-                          onMouseEnter={e=>{e.currentTarget.style.color="#888"}} onMouseLeave={e=>{e.currentTarget.style.color="#383838"}}>ℹ</button>}
+                        <span style={{color:done?"#5A4A2E":"#120E08",fontSize:11,fontFamily:"'Space Mono',monospace",textDecoration:done?"line-through":"none"}}>{ex}</span>
+                        {exI&&<button onClick={()=>setInfoEx(ex)} style={{background:"none",border:"1px solid #181818",color:"#6A5A3A",padding:"1px 6px",cursor:"pointer",fontSize:10,fontFamily:"'Space Mono',monospace"}}
+                          onMouseEnter={e=>{e.currentTarget.style.color="#2A1E0E"}} onMouseLeave={e=>{e.currentTarget.style.color="#6A5A3A"}}>ℹ</button>}
                       </div>
-                      {exI&&<div style={{color:"#3a3a3a",fontSize:10,fontFamily:"'Space Mono',monospace",marginTop:3,lineHeight:1.5}}>{exI[0]}</div>}
+                      {exI&&<div style={{color:"#6A5A3A",fontSize:10,fontFamily:"'Space Mono',monospace",marginTop:3,lineHeight:1.5}}>{exI[0]}</div>}
                     </div>
                   </div>
                 </div>
@@ -505,21 +576,26 @@ export default function WorkoutTracker(){
     <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"12px 0",cursor:"pointer"}} onClick={onToggle}>
       <div style={{flex:1,paddingRight:8}}>
         <div style={{display:"flex",alignItems:"center",gap:7,flexWrap:"wrap",marginBottom:2}}>
-          <span style={{fontSize:11,fontFamily:"'Space Mono',monospace",color:group.cardio?"#2EBD6B":group.core?"#E8A82E":group.violin?"#2E7DE8":"#a0a0a0",fontWeight:(group.core||group.cardio)?700:400}}>{group.name}</span>
-          {group.nonneg&&<span style={{display:"inline-block",padding:"2px 7px",fontSize:9,letterSpacing:".12em",fontFamily:"'Space Mono',monospace",background:"#E8A82E22",color:"#E8A82E"}}>🎻 MUST DO</span>}
-          {group.autoAdded&&<span style={{display:"inline-block",padding:"2px 7px",fontSize:9,letterSpacing:".12em",fontFamily:"'Space Mono',monospace",background:"#E8A82E22",color:"#E8A82E"}}>⚠ AUTO-ADDED</span>}
-          {group.violin&&!group.nonneg&&<span style={{display:"inline-block",padding:"2px 7px",fontSize:9,letterSpacing:".12em",fontFamily:"'Space Mono',monospace",background:"#2E7DE815",color:"#2E7DE8"}}>🎻</span>}
-          {group.core&&<span style={{display:"inline-block",padding:"2px 7px",fontSize:9,letterSpacing:".12em",fontFamily:"'Space Mono',monospace",background:"#E8A82E10",color:"#E8A82E"}}>CORE</span>}
-          {group.cardio&&<span style={{display:"inline-block",padding:"2px 7px",fontSize:9,letterSpacing:".12em",fontFamily:"'Space Mono',monospace",background:"#2EBD6B18",color:"#2EBD6B"}}>♥ CARDIO</span>}
-          {group.mode==="check"&&<span style={{display:"inline-block",padding:"2px 7px",fontSize:9,letterSpacing:".12em",fontFamily:"'Space Mono',monospace",background:"#ffffff08",color:"#444"}}>STRETCH</span>}
-          {group.movedNote&&<span style={{display:"inline-block",padding:"2px 7px",fontSize:9,letterSpacing:".12em",fontFamily:"'Space Mono',monospace",background:"#A855F718",color:"#A855F7"}}>↓ moved from gym</span>}
+          <span style={{fontSize:11,fontFamily:"'Space Mono',monospace",color:group.cardio?"#0A7A2A":group.core?"#AA6800":group.violin?"#0A40AA":"#120E08",fontWeight:(group.core||group.cardio)?700:400}}>{group.name}</span>
+          {group.nonneg&&<span style={{display:"inline-block",padding:"2px 7px",fontSize:9,letterSpacing:".12em",fontFamily:"'Space Mono',monospace",background:"#FFB83330",color:"#AA6800"}}>🎻 MUST DO</span>}
+          {group.autoAdded&&<span style={{display:"inline-block",padding:"2px 7px",fontSize:9,letterSpacing:".12em",fontFamily:"'Space Mono',monospace",background:"#FFB83330",color:"#AA6800"}}>⚠ AUTO-ADDED</span>}
+          {group.violin&&!group.nonneg&&<span style={{display:"inline-block",padding:"2px 7px",fontSize:9,letterSpacing:".12em",fontFamily:"'Space Mono',monospace",background:"#4A95FF20",color:"#0A40AA"}}>🎻</span>}
+          {group.core&&<span style={{display:"inline-block",padding:"2px 7px",fontSize:9,letterSpacing:".12em",fontFamily:"'Space Mono',monospace",background:"#FFB83318",color:"#AA6800"}}>CORE</span>}
+          {group.cardio&&<span style={{display:"inline-block",padding:"2px 7px",fontSize:9,letterSpacing:".12em",fontFamily:"'Space Mono',monospace",background:"#3DD67A22",color:"#0A7A2A"}}>♥ CARDIO</span>}
+          {group.mode==="check"&&<span style={{display:"inline-block",padding:"2px 7px",fontSize:9,letterSpacing:".12em",fontFamily:"'Space Mono',monospace",background:"#ffffff08",color:"#5A4A2E"}}>STRETCH</span>}
+          {group.movedNote&&<span style={{display:"inline-block",padding:"2px 7px",fontSize:9,letterSpacing:".12em",fontFamily:"'Space Mono',monospace",background:"#C07AFF22",color:"#5A10AA"}}>↓ moved from gym</span>}
         </div>
-        <div style={{color:"#2a2a2a",fontSize:10,fontFamily:"'Space Mono',monospace"}}>
-          {group.cardio?"20 min · Zone 2":group.mode==="check"?group.duration:`${group.sets}×${group.reps}`}
-          {group.violinRest&&<span style={{color:"#1a3a1a",marginLeft:8}}>· rest {group.violinRest}</span>}
+        <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
+          <div style={{color:"#6A5A3A",fontSize:10,fontFamily:"'Space Mono',monospace"}}>
+            {group.cardio?"20 min · Zone 2":group.mode==="check"?group.duration:`${group.sets}×${group.reps}`}
+            {group.violinRest&&<span style={{color:"#1A5A1A",marginLeft:8}}>· rest {group.violinRest}</span>}
+          </div>
+          {!group.cardio&&!group.violinStraight&&!group.supersetId&&group.mode!=="check"&&group.sets>1&&(
+            renderTimerButton("90 sec", group.name)
+          )}
         </div>
       </div>
-      <div style={{color:"#222",fontSize:12}}>{isOpen?"▲":"▼"}</div>
+      <div style={{color:"#6A5A3A",fontSize:12}}>{isOpen?"▲":"▼"}</div>
     </div>
   );
 
@@ -527,10 +603,10 @@ export default function WorkoutTracker(){
     if(unit.type==="autoBack"){
       const g=unit.group;const isOpen=openGroup===g.name;
       return(
-        <div key={idx} style={{border:"1px solid #E8A82E40",marginBottom:10,position:"relative",background:"#0d0b00"}}>
-          <div style={{position:"absolute",left:0,top:0,bottom:0,width:3,background:"#E8A82E"}}/>
+        <div key={idx} style={{border:"1px solid #E8A82E40",marginBottom:10,position:"relative",background:"#D4C9A0"}}>
+          <div style={{position:"absolute",left:0,top:0,bottom:0,width:3,background:"#AA6800"}}/>
           <div style={{padding:"8px 14px 4px 14px",display:"flex",alignItems:"center",gap:9,flexWrap:"wrap"}}>
-            <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:13,color:"#E8A82E",letterSpacing:".1em"}}>⚠ AUTO-ADDED</span>
+            <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:13,color:"#AA6800",letterSpacing:".1em"}}>⚠ AUTO-ADDED</span>
             <span style={{color:"#5a4a10",fontSize:10,fontFamily:"'Space Mono',monospace"}}>Leg press selected — lower back has no isometric load today. Do this to compensate.</span>
           </div>
           <div style={{borderTop:"1px solid #E8A82E20",padding:"0 14px"}}>
@@ -547,7 +623,7 @@ export default function WorkoutTracker(){
           <div style={{position:"absolute",left:0,top:0,bottom:0,width:3,background:day.color,opacity:.5}}/>
           <div style={{display:"flex",alignItems:"center",gap:8,padding:"8px 14px 4px 14px"}}>
             <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:13,color:day.color,letterSpacing:".12em"}}>SUPERSET {unit.label}</span>
-            <span style={{color:"#2e2e2e",fontSize:10,fontFamily:"'Space Mono',monospace"}}>↕ alternate · rest {unit.rest}</span>
+            <span style={{color:"#6A5A3A",fontSize:10,fontFamily:"'Space Mono',monospace"}}>↕ alternate · rest {unit.rest}</span>
           </div>
           <div style={{borderTop:`1px solid ${day.color}18`,padding:"0 14px"}}>
             {renderGroupHeader(g1,o1,()=>setOpenGroup(o1?null:g1.name))}
@@ -562,8 +638,9 @@ export default function WorkoutTracker(){
             {renderGroupHeader(g2,o2,()=>setOpenGroup(o2?null:g2.name))}
             {o2&&renderGroupContent(g2)}
           </div>
-          <div style={{padding:"6px 14px",borderTop:`1px solid ${day.color}18`}}>
-            <span style={{color:"#2a2a2a",fontSize:10,fontFamily:"'Space Mono',monospace"}}>Rest {unit.rest} · then repeat · {g1.sets} rounds total</span>
+          <div style={{padding:"8px 14px",borderTop:`1px solid ${day.color}18`,display:"flex",alignItems:"center",justifyContent:"space-between",gap:10,flexWrap:"wrap"}}>
+            <span style={{color:"#6A5A3A",fontSize:10,fontFamily:"'Space Mono',monospace"}}>Rest {unit.rest} · then repeat · {g1.sets} rounds total</span>
+            {renderTimerButton(unit.rest, `${g1.name} / ${g2.name}`)}
           </div>
         </div>
       );
@@ -571,10 +648,13 @@ export default function WorkoutTracker(){
     if(unit.type==="violinSection"){
       return(
         <div key={idx} style={{border:"1px solid #2E7DE828",marginBottom:10,position:"relative"}}>
-          <div style={{position:"absolute",left:0,top:0,bottom:0,width:3,background:"#2E7DE8",opacity:.6}}/>
-          <div style={{padding:"8px 14px 4px 14px",display:"flex",alignItems:"center",gap:10,flexWrap:"wrap"}}>
-            <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:13,color:"#2E7DE8",letterSpacing:".1em"}}>🎻 VIOLIN PRIORITY — STRAIGHT SETS</span>
-            <span style={{color:"#2a3a4a",fontSize:10,fontFamily:"'Space Mono',monospace"}}>45–50 sec rest between sets</span>
+          <div style={{position:"absolute",left:0,top:0,bottom:0,width:3,background:"#0A40AA",opacity:.6}}/>
+          <div style={{padding:"8px 14px 4px 14px",display:"flex",alignItems:"center",gap:10,flexWrap:"wrap",justifyContent:"space-between"}}>
+            <div style={{display:"flex",alignItems:"center",gap:10,flexWrap:"wrap"}}>
+              <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:13,color:"#0A40AA",letterSpacing:".1em"}}>🎻 VIOLIN PRIORITY — STRAIGHT SETS</span>
+              <span style={{color:"#1A3A6A",fontSize:10,fontFamily:"'Space Mono',monospace"}}>45–50 sec rest between sets</span>
+            </div>
+            {renderTimerButton("45 sec", "Violin sets")}
           </div>
           {unit.groups.map(g=>{
             const isOpen=openGroup===g.name;
@@ -607,22 +687,22 @@ export default function WorkoutTracker(){
           {renderGroupHeader(g,isOpen,()=>setOpenGroup(isOpen?null:g.name))}
           {isOpen&&(
             <div style={{paddingBottom:14}}>
-              <div style={{background:"#0c0c0c",border:"1px solid #1a1a1a",padding:"10px 12px",marginBottom:12}}>
-                <div style={{color:"#2EBD6B",fontSize:9,letterSpacing:".15em",fontFamily:"'Space Mono',monospace",marginBottom:5}}>ZONE 2 TARGET</div>
-                <div style={{color:"#555",fontSize:10,fontFamily:"'Space Mono',monospace",lineHeight:1.6,marginBottom:8}}>{ci[0]}</div>
-                <a style={{background:"none",border:"1px solid #2EBD6B",color:"#2EBD6B",padding:"4px 10px",fontFamily:"'Space Mono',monospace",fontSize:10,cursor:"pointer",textDecoration:"none",display:"inline-block"}}
+              <div style={{background:"#D4C9B0",border:"1px solid #1a1a1a",padding:"10px 12px",marginBottom:12}}>
+                <div style={{color:"#0A7A2A",fontSize:9,letterSpacing:".15em",fontFamily:"'Space Mono',monospace",marginBottom:5}}>ZONE 2 TARGET</div>
+                <div style={{color:"#3A2A12",fontSize:10,fontFamily:"'Space Mono',monospace",lineHeight:1.6,marginBottom:8}}>{ci[0]}</div>
+                <a style={{background:"none",border:"1px solid #2EBD6B",color:"#0A7A2A",padding:"4px 10px",fontFamily:"'Space Mono',monospace",fontSize:10,cursor:"pointer",textDecoration:"none",display:"inline-block"}}
                   href={ci[1]} target="_blank" rel="noreferrer">▶ WATCH</a>
               </div>
-              {last&&<div style={{color:"#333",fontSize:10,fontFamily:"'Space Mono',monospace",marginBottom:9}}>Last: {last.minutes||"—"} min · resistance {last.resistance||"—"}</div>}
+              {last&&<div style={{color:"#6A5A3A",fontSize:10,fontFamily:"'Space Mono',monospace",marginBottom:9}}>Last: {last.minutes||"—"} min · resistance {last.resistance||"—"}</div>}
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:9}}>
                 <div>
-                  <div style={{color:"#222",fontSize:9,letterSpacing:".1em",fontFamily:"'Space Mono',monospace",marginBottom:5}}>MINUTES</div>
-                  <input style={{background:"#0d0d0d",border:"1px solid #1c1c1c",color:"#c8c8c8",padding:"8px 10px",fontFamily:"'Space Mono',monospace",fontSize:13,width:"100%",outline:"none"}}
+                  <div style={{color:"#6A5A3A",fontSize:9,letterSpacing:".1em",fontFamily:"'Space Mono',monospace",marginBottom:5}}>MINUTES</div>
+                  <input style={{background:"#C8BBA0",border:"1px solid #1c1c1c",color:"#0A0806",padding:"8px 10px",fontFamily:"'Space Mono',monospace",fontSize:13,width:"100%",outline:"none"}}
                     type="number" placeholder="20" value={cur.minutes||""} onChange={e=>updateCardio("minutes",e.target.value)}/>
                 </div>
                 <div>
-                  <div style={{color:"#222",fontSize:9,letterSpacing:".1em",fontFamily:"'Space Mono',monospace",marginBottom:5}}>RESISTANCE</div>
-                  <input style={{background:"#0d0d0d",border:"1px solid #1c1c1c",color:"#c8c8c8",padding:"8px 10px",fontFamily:"'Space Mono',monospace",fontSize:13,width:"100%",outline:"none"}}
+                  <div style={{color:"#6A5A3A",fontSize:9,letterSpacing:".1em",fontFamily:"'Space Mono',monospace",marginBottom:5}}>RESISTANCE</div>
+                  <input style={{background:"#C8BBA0",border:"1px solid #1c1c1c",color:"#0A0806",padding:"8px 10px",fontFamily:"'Space Mono',monospace",fontSize:13,width:"100%",outline:"none"}}
                     type="number" placeholder="—" value={cur.resistance||""} onChange={e=>updateCardio("resistance",e.target.value)}/>
                 </div>
               </div>
@@ -637,16 +717,16 @@ export default function WorkoutTracker(){
   const renderWarmup=()=>{
     const wu=WARMUP[currentDay];if(!wu)return null;
     return(
-      <div style={{border:`1px solid ${day.color}30`,marginBottom:16,background:"#0b0b0b"}}>
+      <div style={{border:`1px solid ${day.color}30`,marginBottom:16,background:"#DDD4BC"}}>
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"12px 14px",cursor:"pointer"}} onClick={()=>setShowWarmup(p=>!p)}>
           <div>
             <div style={{display:"flex",alignItems:"center",gap:9,marginBottom:2}}>
               <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:15,color:day.color,letterSpacing:".12em"}}>WARM-UP</span>
               <span style={{display:"inline-block",padding:"2px 7px",fontSize:9,letterSpacing:".12em",fontFamily:"'Space Mono',monospace",background:day.color+"18",color:day.color}}>DO FIRST</span>
             </div>
-            <div style={{color:"#2e2e2e",fontSize:10,fontFamily:"'Space Mono',monospace"}}>{wu.note}</div>
+            <div style={{color:"#6A5A3A",fontSize:10,fontFamily:"'Space Mono',monospace"}}>{wu.note}</div>
           </div>
-          <div style={{color:"#2a2a2a",fontSize:13,marginLeft:10}}>{showWarmup?"▲":"▼"}</div>
+          <div style={{color:"#6A5A3A",fontSize:13,marginLeft:10}}>{showWarmup?"▲":"▼"}</div>
         </div>
         {showWarmup&&(
           <div style={{borderTop:`1px solid ${day.color}18`}}>
@@ -654,17 +734,17 @@ export default function WorkoutTracker(){
               const done=!!(sessionData["__warmup__"]?.[i]);
               return(
                 <div key={i} style={{display:"flex",alignItems:"flex-start",gap:10,padding:"10px 14px",borderBottom:"1px solid #111"}}>
-                  <div style={{width:17,height:17,border:`1px solid ${done?day.color:"#242424"}`,background:done?day.color+"22":"transparent",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,marginTop:1}}
+                  <div style={{width:17,height:17,border:`1px solid ${done?day.color:"#BFB298"}`,background:done?day.color+"22":"transparent",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,marginTop:1}}
                     onClick={()=>setSessionData(p=>({...p,["__warmup__"]:{...(p["__warmup__"]||{}),[i]:!p["__warmup__"]?.[i]}}))}>
                     {done&&<span style={{color:day.color,fontSize:10}}>✓</span>}
                   </div>
                   <div style={{flex:1}}>
                     <div style={{display:"flex",alignItems:"center",gap:7}}>
-                      <span style={{color:done?"#444":"#a0a0a0",fontSize:11,fontFamily:"'Space Mono',monospace",textDecoration:done?"line-through":"none"}}>{item.label}</span>
-                      {item.info&&INFO[item.info]&&<button onClick={()=>setInfoEx(item.info)} style={{background:"none",border:"1px solid #181818",color:"#383838",padding:"1px 6px",cursor:"pointer",fontSize:10,fontFamily:"'Space Mono',monospace"}}
-                        onMouseEnter={e=>{e.currentTarget.style.color="#888"}} onMouseLeave={e=>{e.currentTarget.style.color="#383838"}}>ℹ</button>}
+                      <span style={{color:done?"#5A4A2E":"#120E08",fontSize:11,fontFamily:"'Space Mono',monospace",textDecoration:done?"line-through":"none"}}>{item.label}</span>
+                      {item.info&&INFO[item.info]&&<button onClick={()=>setInfoEx(item.info)} style={{background:"none",border:"1px solid #181818",color:"#6A5A3A",padding:"1px 6px",cursor:"pointer",fontSize:10,fontFamily:"'Space Mono',monospace"}}
+                        onMouseEnter={e=>{e.currentTarget.style.color="#2A1E0E"}} onMouseLeave={e=>{e.currentTarget.style.color="#6A5A3A"}}>ℹ</button>}
                     </div>
-                    <div style={{color:"#383838",fontSize:10,fontFamily:"'Space Mono',monospace",marginTop:2}}>{item.note}</div>
+                    <div style={{color:"#6A5A3A",fontSize:10,fontFamily:"'Space Mono',monospace",marginTop:2}}>{item.note}</div>
                   </div>
                 </div>
               );
@@ -682,33 +762,84 @@ export default function WorkoutTracker(){
   }
 
   return(
-    <div style={{background:"#080808",minHeight:"100vh",fontFamily:"'Courier New',monospace",color:"#c8c8c8",paddingBottom:40}}>
+    <div style={{background:"#E8DFCD",minHeight:"100vh",fontFamily:"'Courier New',monospace",color:"#0A0806",paddingBottom:40}}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap');
         *{box-sizing:border-box;margin:0;padding:0}
-        ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:#090909}::-webkit-scrollbar-thumb{background:#1e1e1e}
+        ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:#D8CFBA}::-webkit-scrollbar-thumb{background:#B5A88E}
         input[type=number]{-moz-appearance:textfield}input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
       `}</style>
 
+      {/* ── Floating rest timer overlay ── */}
+      {timer&&(
+        <div style={{position:"fixed",bottom:0,left:0,right:0,zIndex:50,padding:"0 16px 20px"}}>
+          <div style={{
+            maxWidth:590,margin:"0 auto",
+            background: timer.running ? "#0f0d00" : "#C8D4BC",
+            border: `2px solid ${timer.running ? (timer.seconds<=5?"#AA2A0A":"#AA6800") : "#0A7A2A"}`,
+            padding:"14px 18px",
+            display:"flex",alignItems:"center",gap:16,
+          }}>
+            {/* Progress arc */}
+            <div style={{position:"relative",width:52,height:52,flexShrink:0}}>
+              <svg width="52" height="52" style={{transform:"rotate(-90deg)"}}>
+                <circle cx="26" cy="26" r="22" fill="none" stroke="#B5A88E" strokeWidth="3"/>
+                <circle cx="26" cy="26" r="22" fill="none"
+                  stroke={timer.running?(timer.seconds<=5?"#AA2A0A":"#AA6800"):"#0A7A2A"}
+                  strokeWidth="3"
+                  strokeDasharray={`${2*Math.PI*22}`}
+                  strokeDashoffset={`${2*Math.PI*22*(1-timer.seconds/timer.total)}`}
+                  style={{transition:"stroke-dashoffset 1s linear,stroke .3s"}}/>
+              </svg>
+              <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",
+                fontFamily:"'Bebas Neue',sans-serif",fontSize:17,
+                color:timer.running?(timer.seconds<=5?"#AA2A0A":"#AA6800"):"#0A7A2A"}}>
+                {timer.seconds}
+              </div>
+            </div>
+            <div style={{flex:1}}>
+              <div style={{fontFamily:"'Space Mono',monospace",fontSize:9,letterSpacing:".2em",
+                color:timer.running?"#5a4a00":"#1A5A1A",marginBottom:3}}>
+                {timer.running?"REST TIMER":"REST COMPLETE"}
+              </div>
+              <div style={{fontFamily:"'Space Mono',monospace",fontSize:11,
+                color:timer.running?(timer.seconds<=5?"#AA2A0A":"#2A1E0E"):"#0A7A2A"}}>
+                {timer.running
+                  ?(timer.seconds<=5?"Get ready...":timer.label)
+                  :"Start your next set"}
+              </div>
+            </div>
+            <button onClick={stopTimer} style={{background:"none",border:"1px solid #B5A88E",
+              color:"#6A5A3A",padding:"6px 10px",cursor:"pointer",
+              fontFamily:"'Space Mono',monospace",fontSize:10,flexShrink:0,
+              transition:"color .15s,border-color .15s"}}
+              onMouseEnter={e=>{e.currentTarget.style.color="#2A1E0E";e.currentTarget.style.borderColor="#3A2A12"}}
+              onMouseLeave={e=>{e.currentTarget.style.color="#6A5A3A";e.currentTarget.style.borderColor="#6A5A3A"}}>
+              {timer.running?"SKIP":"CLEAR"}
+            </button>
+          </div>
+        </div>
+      )}
+
       {infoEx&&(
         <div style={{position:"fixed",inset:0,background:"#000b",zIndex:100,display:"flex",alignItems:"center",justifyContent:"center",padding:16}} onClick={()=>setInfoEx(null)}>
-          <div style={{background:"#0f0f0f",border:"1px solid #2a2a2a",padding:20,maxWidth:420,width:"100%"}} onClick={e=>e.stopPropagation()}>
-            <div style={{fontFamily:"'Space Mono',monospace",fontSize:12,color:"#fff",marginBottom:10,fontWeight:700}}>{infoEx}</div>
-            <div style={{color:"#888",fontSize:11,fontFamily:"'Space Mono',monospace",lineHeight:1.6,marginBottom:14}}>{INFO[infoEx]?.[0]||"Form cues coming soon."}</div>
+          <div style={{background:"#C8BBA0",border:"1px solid #B5A88E",padding:20,maxWidth:420,width:"100%"}} onClick={e=>e.stopPropagation()}>
+            <div style={{fontFamily:"'Space Mono',monospace",fontSize:12,color:"#0A0806",marginBottom:10,fontWeight:700}}>{infoEx}</div>
+            <div style={{color:"#2A1E0E",fontSize:11,fontFamily:"'Space Mono',monospace",lineHeight:1.6,marginBottom:14}}>{INFO[infoEx]?.[0]||"Form cues coming soon."}</div>
             <div style={{display:"flex",gap:10,alignItems:"center"}}>
               <a style={{background:"none",border:"1px solid #c00",color:"#c00",padding:"5px 12px",fontFamily:"'Space Mono',monospace",fontSize:10,cursor:"pointer",textDecoration:"none",display:"inline-block"}}
                 href={INFO[infoEx]?.[1]||"#"} target="_blank" rel="noreferrer">▶ WATCH ON YOUTUBE</a>
-              <button onClick={()=>setInfoEx(null)} style={{background:"none",border:"none",color:"#444",cursor:"pointer",fontFamily:"'Space Mono',monospace",fontSize:11,marginLeft:"auto"}}>✕ close</button>
+              <button onClick={()=>setInfoEx(null)} style={{background:"none",border:"none",color:"#5A4A2E",cursor:"pointer",fontFamily:"'Space Mono',monospace",fontSize:11,marginLeft:"auto"}}>✕ close</button>
             </div>
           </div>
         </div>
       )}
 
-      <div style={{borderBottom:"1px solid #121212",padding:"13px 18px",display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,background:"#080808",zIndex:10}}>
-        <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:19,letterSpacing:".2em",color:"#fff"}}>🎻 GYM LOG</div>
+      <div style={{borderBottom:"1px solid #121212",padding:"13px 18px",display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,background:"#E8DFCD",zIndex:10}}>
+        <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:19,letterSpacing:".2em",color:"#0A0806"}}>🎻 GYM LOG</div>
         <div style={{display:"flex"}}>
           {[["home","HOME"],["history","LOG"]].map(([v,l])=>(
-            <button key={v} onClick={()=>setView(v)} style={{background:"none",border:"none",cursor:"pointer",padding:"10px 14px",fontFamily:"'Space Mono',monospace",fontSize:10,letterSpacing:".2em",textTransform:"uppercase",color:view===v?"#fff":"#383838",borderBottom:view===v?`2px solid ${day.color}`:"2px solid transparent"}}>{l}</button>
+            <button key={v} onClick={()=>setView(v)} style={{background:"none",border:"none",cursor:"pointer",padding:"10px 14px",fontFamily:"'Space Mono',monospace",fontSize:10,letterSpacing:".2em",textTransform:"uppercase",color:view===v?"#fff":"#6A5A3A",borderBottom:view===v?`2px solid ${day.color}`:"2px solid transparent"}}>{l}</button>
           ))}
         </div>
       </div>
@@ -717,9 +848,9 @@ export default function WorkoutTracker(){
         {view==="home"&&(
           <div>
             <div style={{marginBottom:24}}>
-              <div style={{color:"#2a2a2a",fontSize:10,letterSpacing:".25em",fontFamily:"'Space Mono',monospace",marginBottom:7}}>NEXT SESSION</div>
+              <div style={{color:"#6A5A3A",fontSize:10,letterSpacing:".25em",fontFamily:"'Space Mono',monospace",marginBottom:7}}>NEXT SESSION</div>
               <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:46,color:DAYS[currentDay].color,lineHeight:.9,marginBottom:4}}>{DAYS[currentDay].label}</div>
-              <div style={{color:"#444",fontSize:11,fontFamily:"'Space Mono',monospace"}}>{DAYS[currentDay].subtitle}</div>
+              <div style={{color:"#5A4A2E",fontSize:11,fontFamily:"'Space Mono',monospace"}}>{DAYS[currentDay].subtitle}</div>
             </div>
             {/* Cycle progress bar */}
             {cycle.done.length>0&&(()=>{
@@ -727,13 +858,13 @@ export default function WorkoutTracker(){
               const elapsed=cycle.start?Math.floor((Date.now()-cycle.start)/(1000*60*60*24)):0;
               const daysLeft=cycle.start?Math.max(0,10-elapsed):10;
               return(
-                <div style={{marginBottom:16,padding:"12px 14px",border:"1px solid #1c1c1c",background:"#0b0b0b"}}>
+                <div style={{marginBottom:16,padding:"12px 14px",border:"1px solid #1c1c1c",background:"#DDD4BC"}}>
                   <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
-                    <span style={{color:"#444",fontSize:10,fontFamily:"'Space Mono',monospace",letterSpacing:".15em"}}>CURRENT CYCLE</span>
-                    <span style={{color:"#333",fontSize:10,fontFamily:"'Space Mono',monospace"}}>{cycle.done.length}/5 done &middot; resets in {daysLeft}d</span>
+                    <span style={{color:"#5A4A2E",fontSize:10,fontFamily:"'Space Mono',monospace",letterSpacing:".15em"}}>CURRENT CYCLE</span>
+                    <span style={{color:"#6A5A3A",fontSize:10,fontFamily:"'Space Mono',monospace"}}>{cycle.done.length}/5 done &middot; resets in {daysLeft}d</span>
                   </div>
-                  <div style={{height:3,background:"#181818",borderRadius:2}}>
-                    <div style={{height:3,background:"#2EBD6B",borderRadius:2,width:`${pct}%`,transition:"width .4s"}}/>
+                  <div style={{height:3,background:"#BFB298",borderRadius:2}}>
+                    <div style={{height:3,background:"#0A7A2A",borderRadius:2,width:`${pct}%`,transition:"width .4s"}}/>
                   </div>
                 </div>
               );
@@ -745,28 +876,28 @@ export default function WorkoutTracker(){
                 const lotusDaysAgo=lotusLast?Math.floor((Date.now()-lotusLast)/(1000*60*60*24)):null;
                 return(
                   <div key={d} onClick={()=>{setCurrentDay(d);setSessionData({});setSelectedEx({});setOpenGroup(null);setShowWarmup(true);setView("workout");}}
-                    style={{border:`1px solid ${currentDay===d?DAYS[d].color+"38":isDone?"#1e2a1e":"#141414"}`,padding:"15px 17px",cursor:"pointer",position:"relative",overflow:"hidden",background:isDone?"#0a0f0a":"transparent",opacity:isDone?0.72:1}}>
-                    <div style={{position:"absolute",left:0,top:0,bottom:0,width:3,background:isDone?"#2EBD6B":DAYS[d].color,opacity:isDone?0.8:currentDay===d?1:0.12}}/>
-                    {isDone&&<div style={{position:"absolute",right:14,top:"50%",transform:"translateY(-50%)",color:"#2EBD6B",fontSize:18}}>&check;</div>}
+                    style={{border:`1px solid ${currentDay===d?DAYS[d].color+"38":isDone?"#1e2a1e":"#BFB298"}`,padding:"15px 17px",cursor:"pointer",position:"relative",overflow:"hidden",background:isDone?"#DDD4BC":"transparent",opacity:isDone?0.72:1}}>
+                    <div style={{position:"absolute",left:0,top:0,bottom:0,width:3,background:isDone?"#0A7A2A":DAYS[d].color,opacity:isDone?0.8:currentDay===d?1:0.12}}/>
+                    {isDone&&<div style={{position:"absolute",right:14,top:"50%",transform:"translateY(-50%)",color:"#0A7A2A",fontSize:18}}>&check;</div>}
                     <div style={{paddingLeft:13,paddingRight:isDone?32:0}}>
                       <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:3,flexWrap:"wrap"}}>
-                        <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:17,color:isDone?"#2EBD6B":DAYS[d].color,letterSpacing:".07em"}}>{DAYS[d].label}</span>
+                        <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:17,color:isDone?"#0A7A2A":DAYS[d].color,letterSpacing:".07em"}}>{DAYS[d].label}</span>
                         {isDone
-                          ?<span style={{display:"inline-block",padding:"2px 7px",fontSize:9,letterSpacing:".12em",fontFamily:"'Space Mono',monospace",background:"#2EBD6B18",color:"#2EBD6B"}}>DONE</span>
-                          :<span style={{display:"inline-block",padding:"2px 7px",fontSize:9,letterSpacing:".12em",fontFamily:"'Space Mono',monospace",background:"#ffffff06",color:"#484848",border:"1px solid #1a1a1a"}}>{DAYS[d].type==="home"?"HOME":"GYM"}</span>
+                          ?<span style={{display:"inline-block",padding:"2px 7px",fontSize:9,letterSpacing:".12em",fontFamily:"'Space Mono',monospace",background:"#3DD67A22",color:"#0A7A2A"}}>DONE</span>
+                          :<span style={{display:"inline-block",padding:"2px 7px",fontSize:9,letterSpacing:".12em",fontFamily:"'Space Mono',monospace",background:"#ffffff06",color:"#5A4A2E",border:"1px solid #1a1a1a"}}>{DAYS[d].type==="home"?"HOME":"GYM"}</span>
                         }
-                        {!isDone&&DAYS[d].type==="gym"&&d!==2&&<span style={{display:"inline-block",padding:"2px 7px",fontSize:9,letterSpacing:".12em",fontFamily:"'Space Mono',monospace",background:"#2EBD6B12",color:"#2EBD6B",border:"1px solid #2EBD6B20"}}>CARDIO</span>}
+                        {!isDone&&DAYS[d].type==="gym"&&d!==2&&<span style={{display:"inline-block",padding:"2px 7px",fontSize:9,letterSpacing:".12em",fontFamily:"'Space Mono',monospace",background:"#3DD67A18",color:"#0A7A2A",border:"1px solid #2EBD6B20"}}>CARDIO</span>}
                         {!isDone&&DAYS[d].type==="gym"&&<span style={{display:"inline-block",padding:"2px 7px",fontSize:9,letterSpacing:".12em",fontFamily:"'Space Mono',monospace",background:DAYS[d].color+"10",color:DAYS[d].color,border:`1px solid ${DAYS[d].color}20`}}>SUPERSETS</span>}
-                        {isLotus&&<span style={{display:"inline-block",padding:"2px 7px",fontSize:9,letterSpacing:".12em",fontFamily:"'Space Mono',monospace",background:"#E84A2E18",color:"#E84A2E"}}>LOTUS</span>}
+                        {isLotus&&<span style={{display:"inline-block",padding:"2px 7px",fontSize:9,letterSpacing:".12em",fontFamily:"'Space Mono',monospace",background:"#FF6B4A20",color:"#AA2A0A"}}>LOTUS</span>}
                         {currentDay===d&&!isDone&&<span style={{display:"inline-block",padding:"2px 7px",fontSize:9,letterSpacing:".12em",fontFamily:"'Space Mono',monospace",background:DAYS[d].color+"18",color:DAYS[d].color}}>NEXT UP</span>}
                       </div>
                       <div style={{display:"flex",alignItems:"center",gap:10}}>
-                        <div style={{color:isDone?"#2a3a2a":"#404040",fontSize:11,fontFamily:"'Space Mono',monospace"}}>
+                        <div style={{color:isDone?"#1A4A1A":"#5A4A2E",fontSize:11,fontFamily:"'Space Mono',monospace"}}>
                           {isLotus
                             ?(lotusDaysAgo===null?"Never completed":lotusDaysAgo===0?"Last done: today":`Last done: ${lotusDaysAgo}d ago`)
                             :(isDone?"Completed this cycle":DAYS[d].subtitle||"4-Phase Hip Mobility Progression")}
                         </div>
-                        <div style={{color:"#2a2a2a",fontSize:10,fontFamily:"'Space Mono',monospace",marginLeft:"auto"}}>{DURATION_LABEL[d]}</div>
+                        <div style={{color:"#6A5A3A",fontSize:10,fontFamily:"'Space Mono',monospace",marginLeft:"auto"}}>{DURATION_LABEL[d]}</div>
                       </div>
                     </div>
                   </div>
@@ -775,14 +906,14 @@ export default function WorkoutTracker(){
             </div>
             <div style={{border:"1px solid #141414",marginBottom:20}}>
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"12px 15px",cursor:"pointer"}} onClick={()=>setShowCore(p=>!p)}>
-                <span style={{color:"#2e2e2e",fontSize:10,letterSpacing:".2em",fontFamily:"'Space Mono',monospace"}}>CORE COVERAGE MAP</span>
-                <span style={{color:"#242424",fontSize:12}}>{showCore?"▲":"▼"}</span>
+                <span style={{color:"#6A5A3A",fontSize:10,letterSpacing:".2em",fontFamily:"'Space Mono',monospace"}}>CORE COVERAGE MAP</span>
+                <span style={{color:"#BFB298",fontSize:12}}>{showCore?"▲":"▼"}</span>
               </div>
               {showCore&&(
                 <div style={{padding:"0 15px 13px",display:"grid",gap:5}}>
                   {CORE_MAP.map(c=>(
-                    <div key={c.label} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"6px 9px",background:"#0c0c0c",border:`1px solid ${c.color}18`}}>
-                      <span style={{fontSize:11,color:"#606060",fontFamily:"'Space Mono',monospace"}}>{c.label}</span>
+                    <div key={c.label} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"6px 9px",background:"#D4C9B0",border:`1px solid ${c.color}18`}}>
+                      <span style={{fontSize:11,color:"#3A2A12",fontFamily:"'Space Mono',monospace"}}>{c.label}</span>
                       <span style={{display:"inline-block",padding:"2px 7px",fontSize:9,letterSpacing:".12em",fontFamily:"'Space Mono',monospace",background:c.color+"18",color:c.color}}>{c.day}</span>
                     </div>
                   ))}
@@ -791,14 +922,14 @@ export default function WorkoutTracker(){
             </div>
             {Object.keys(history).length>0&&(
               <div>
-                <div style={{color:"#222",fontSize:10,letterSpacing:".2em",fontFamily:"'Space Mono',monospace",marginBottom:8}}>RECENT</div>
+                <div style={{color:"#6A5A3A",fontSize:10,letterSpacing:".2em",fontFamily:"'Space Mono',monospace",marginBottom:8}}>RECENT</div>
                 {Object.entries(history).sort(([a],[b])=>b-a).slice(0,4).map(([ts,e])=>(
                   <div key={ts} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"8px 0",borderBottom:"1px solid #0e0e0e"}}>
                     <div style={{display:"flex",alignItems:"center",gap:9}}>
                       <div style={{width:3,height:14,background:DAYS[e.day].color}}/>
                       <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:15,color:DAYS[e.day].color,letterSpacing:".07em"}}>{DAYS[e.day].label}</span>
                     </div>
-                    <span style={{color:"#2e2e2e",fontSize:10,fontFamily:"'Space Mono',monospace"}}>{e.date}</span>
+                    <span style={{color:"#6A5A3A",fontSize:10,fontFamily:"'Space Mono',monospace"}}>{e.date}</span>
                   </div>
                 ))}
               </div>
@@ -809,19 +940,19 @@ export default function WorkoutTracker(){
         {view==="workout"&&(
           <div>
             <div style={{display:"flex",alignItems:"center",gap:13,marginBottom:20}}>
-              <button onClick={()=>setView("home")} style={{background:"none",border:"none",color:"#383838",cursor:"pointer",fontSize:22,padding:0}}>←</button>
+              <button onClick={()=>setView("home")} style={{background:"none",border:"none",color:"#6A5A3A",cursor:"pointer",fontSize:22,padding:0}}>←</button>
               <div style={{flex:1}}>
                 <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:34,color:day.color,lineHeight:.9,letterSpacing:".05em"}}>{day.label}</div>
-                <div style={{color:"#444",fontSize:11,fontFamily:"'Space Mono',monospace",marginTop:3}}>{day.subtitle}</div>
+                <div style={{color:"#5A4A2E",fontSize:11,fontFamily:"'Space Mono',monospace",marginTop:3}}>{day.subtitle}</div>
               </div>
-              <div style={{color:"#333",fontSize:11,fontFamily:"'Space Mono',monospace"}}>{DURATION_LABEL[currentDay]}</div>
+              <div style={{color:"#6A5A3A",fontSize:11,fontFamily:"'Space Mono',monospace"}}>{DURATION_LABEL[currentDay]}</div>
             </div>
 
             {currentDay===6&&day.lotusPhases&&(
               <div>
-                <div style={{border:"1px solid #E84A2E30",background:"#0d0800",padding:"14px 16px",marginBottom:18}}>
-                  <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:14,color:"#E84A2E",letterSpacing:".12em",marginBottom:6}}>🪷 LOTUS PROGRESSION</div>
-                  <div style={{color:"#555",fontSize:10,fontFamily:"'Space Mono',monospace",lineHeight:1.7}}>
+                <div style={{border:"1px solid #E84A2E30",background:"#D4C4A0",padding:"14px 16px",marginBottom:18}}>
+                  <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:14,color:"#AA2A0A",letterSpacing:".12em",marginBottom:6}}>🪷 LOTUS PROGRESSION</div>
+                  <div style={{color:"#3A2A12",fontSize:10,fontFamily:"'Space Mono',monospace",lineHeight:1.7}}>
                     Work each phase until the exercises feel relaxed and comfortable before moving on. Never force range. Any knee discomfort means stop — rotation must come from the hip, not the knee. Both sides must be equal before advancing.
                   </div>
                 </div>
@@ -838,9 +969,9 @@ export default function WorkoutTracker(){
                             <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:16,color:phase.color,letterSpacing:".08em"}}>{phase.label}</span>
                             <span style={{display:"inline-block",padding:"2px 7px",fontSize:9,letterSpacing:".12em",fontFamily:"'Space Mono',monospace",background:phase.color+"18",color:phase.color}}>{checkedCount}/{phase.exercises.length} done</span>
                           </div>
-                          <div style={{color:"#383838",fontSize:10,fontFamily:"'Space Mono',monospace"}}>{phase.note}</div>
+                          <div style={{color:"#6A5A3A",fontSize:10,fontFamily:"'Space Mono',monospace"}}>{phase.note}</div>
                         </div>
-                        <div style={{color:"#222",fontSize:12,marginLeft:10}}>{isOpen?"▲":"▼"}</div>
+                        <div style={{color:"#6A5A3A",fontSize:12,marginLeft:10}}>{isOpen?"▲":"▼"}</div>
                       </div>
                       {isOpen&&(
                         <div style={{borderTop:`1px solid ${phase.color}18`}}>
@@ -849,18 +980,18 @@ export default function WorkoutTracker(){
                             const exI=INFO[ex.name];
                             return(
                               <div key={ex.name} style={{display:"flex",alignItems:"flex-start",gap:11,padding:"12px 14px",borderBottom:`1px solid ${phase.color}10`}}>
-                                <div style={{width:18,height:18,border:`1px solid ${done?phase.color:"#282828"}`,background:done?phase.color+"25":"transparent",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,marginTop:1}}
+                                <div style={{width:18,height:18,border:`1px solid ${done?phase.color:"#B5A88E"}`,background:done?phase.color+"25":"transparent",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,marginTop:1}}
                                   onClick={()=>setSessionData(p=>({...p,[phaseKey]:{...(p[phaseKey]||{}),[ex.name]:!p[phaseKey]?.[ex.name]}}))}>
                                   {done&&<span style={{color:phase.color,fontSize:11}}>✓</span>}
                                 </div>
                                 <div style={{flex:1}}>
                                   <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap",marginBottom:3}}>
-                                    <span style={{color:done?"#3a3a3a":"#c0c0c0",fontSize:11,fontFamily:"'Space Mono',monospace",textDecoration:done?"line-through":"none"}}>{ex.name}</span>
+                                    <span style={{color:done?"#6A5A3A":"#120E08",fontSize:11,fontFamily:"'Space Mono',monospace",textDecoration:done?"line-through":"none"}}>{ex.name}</span>
                                     <span style={{color:phase.color,fontSize:10,fontFamily:"'Space Mono',monospace",opacity:.7}}>{ex.duration}</span>
-                                    {exI&&<button onClick={()=>setInfoEx(ex.name)} style={{background:"none",border:"1px solid #1e1e1e",color:"#383838",padding:"1px 6px",cursor:"pointer",fontSize:10,fontFamily:"'Space Mono',monospace"}}
-                                      onMouseEnter={e=>{e.currentTarget.style.color="#888"}} onMouseLeave={e=>{e.currentTarget.style.color="#383838"}}>i</button>}
+                                    {exI&&<button onClick={()=>setInfoEx(ex.name)} style={{background:"none",border:"1px solid #1e1e1e",color:"#6A5A3A",padding:"1px 6px",cursor:"pointer",fontSize:10,fontFamily:"'Space Mono',monospace"}}
+                                      onMouseEnter={e=>{e.currentTarget.style.color="#2A1E0E"}} onMouseLeave={e=>{e.currentTarget.style.color="#6A5A3A"}}>i</button>}
                                   </div>
-                                  {exI&&<div style={{color:"#333",fontSize:10,fontFamily:"'Space Mono',monospace",lineHeight:1.55}}>{exI[0]}</div>}
+                                  {exI&&<div style={{color:"#6A5A3A",fontSize:10,fontFamily:"'Space Mono',monospace",lineHeight:1.55}}>{exI[0]}</div>}
                                 </div>
                               </div>
                             );
@@ -871,7 +1002,7 @@ export default function WorkoutTracker(){
                   );
                 })}
                 <div style={{marginTop:24}}>
-                  <button onClick={saveWorkout} style={{border:"none",padding:"17px 28px",fontFamily:"'Bebas Neue',sans-serif",fontSize:22,letterSpacing:".12em",cursor:"pointer",width:"100%",background:savedMsg?"#2EBD6B":"#E84A2E",color:"#000"}}>
+                  <button onClick={saveWorkout} style={{border:"none",padding:"17px 28px",fontFamily:"'Bebas Neue',sans-serif",fontSize:22,letterSpacing:".12em",cursor:"pointer",width:"100%",background:savedMsg?"#0A7A2A":"#AA2A0A",color:"#000"}}>
                     {savedMsg?`✓  SAVED — NEXT: ${savedMsg}`:"FINISH & SAVE SESSION"}
                   </button>
                 </div>
@@ -885,17 +1016,17 @@ export default function WorkoutTracker(){
                   <div style={{display:"flex",gap:12,marginBottom:14,flexWrap:"wrap"}}>
                     <div style={{display:"flex",alignItems:"center",gap:6}}>
                       <div style={{width:3,height:14,background:day.color,opacity:.5}}/>
-                      <span style={{color:"#333",fontSize:10,fontFamily:"'Space Mono',monospace"}}>Superset — alternate A↕8, rest after both</span>
+                      <span style={{color:"#6A5A3A",fontSize:10,fontFamily:"'Space Mono',monospace"}}>Superset — alternate A↕8, rest after both</span>
                     </div>
                     <div style={{display:"flex",alignItems:"center",gap:6}}>
-                      <div style={{width:3,height:14,background:"#2E7DE8",opacity:.6}}/>
-                      <span style={{color:"#333",fontSize:10,fontFamily:"'Space Mono',monospace"}}>🎻 Violin — straight sets, 45–50 sec rest</span>
+                      <div style={{width:3,height:14,background:"#0A40AA",opacity:.6}}/>
+                      <span style={{color:"#6A5A3A",fontSize:10,fontFamily:"'Space Mono',monospace"}}>🎻 Violin — straight sets, 45–50 sec rest</span>
                     </div>
                   </div>
                 )}
                 {renderUnits.map((unit,i)=>renderUnit(unit,i))}
                 <div style={{marginTop:24}}>
-                  <button onClick={saveWorkout} style={{border:"none",padding:"17px 28px",fontFamily:"'Bebas Neue',sans-serif",fontSize:22,letterSpacing:".12em",cursor:"pointer",width:"100%",background:savedMsg?"#2EBD6B":day.color,color:"#000"}}>
+                  <button onClick={saveWorkout} style={{border:"none",padding:"17px 28px",fontFamily:"'Bebas Neue',sans-serif",fontSize:22,letterSpacing:".12em",cursor:"pointer",width:"100%",background:savedMsg?"#0A7A2A":day.color,color:"#000"}}>
                     {savedMsg?`✓  SAVED — NEXT: ${savedMsg}`:"FINISH & SAVE WORKOUT"}
                   </button>
                 </div>
@@ -906,9 +1037,9 @@ export default function WorkoutTracker(){
 
         {view==="history"&&(
           <div>
-            <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:34,color:"#fff",letterSpacing:".08em",marginBottom:18}}>SESSION LOG</div>
+            <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:34,color:"#0A0806",letterSpacing:".08em",marginBottom:18}}>SESSION LOG</div>
             {!Object.keys(history).length
-              ?<div style={{color:"#222",fontSize:12,fontFamily:"'Space Mono',monospace"}}>No sessions logged yet.</div>
+              ?<div style={{color:"#6A5A3A",fontSize:12,fontFamily:"'Space Mono',monospace"}}>No sessions logged yet.</div>
               :Object.entries(history).sort(([a],[b])=>b-a).map(([ts,e])=>(
                 <div key={ts} style={{border:"1px solid #131313",marginBottom:9}}>
                   <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"12px 14px",borderBottom:"1px solid #0f0f0f"}}>
@@ -916,15 +1047,15 @@ export default function WorkoutTracker(){
                       <div style={{width:3,height:17,background:DAYS[e.day].color}}/>
                       <span style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:18,color:DAYS[e.day].color,letterSpacing:".07em"}}>{DAYS[e.day].label}</span>
                     </div>
-                    <span style={{color:"#303030",fontSize:11,fontFamily:"'Space Mono',monospace"}}>{e.date}</span>
+                    <span style={{color:"#6A5A3A",fontSize:11,fontFamily:"'Space Mono',monospace"}}>{e.date}</span>
                   </div>
                   <div style={{padding:"11px 14px"}}>
                     {e.sets?.["Cardio — Zone 2"]&&(e.sets["Cardio — Zone 2"].minutes||e.sets["Cardio — Zone 2"].resistance)&&(
                       <div style={{marginBottom:10}}>
-                        <div style={{color:"#2EBD6B",fontSize:10,fontFamily:"'Space Mono',monospace",marginBottom:4}}>♥ Zone 2 Cardio</div>
+                        <div style={{color:"#0A7A2A",fontSize:10,fontFamily:"'Space Mono',monospace",marginBottom:4}}>♥ Zone 2 Cardio</div>
                         <div style={{display:"flex",gap:7}}>
-                          {e.sets["Cardio — Zone 2"].minutes&&<span style={{background:"#0c0c0c",border:"1px solid #161616",padding:"3px 9px",fontSize:11,color:"#666",fontFamily:"'Space Mono',monospace"}}>{e.sets["Cardio — Zone 2"].minutes} min</span>}
-                          {e.sets["Cardio — Zone 2"].resistance&&<span style={{background:"#0c0c0c",border:"1px solid #161616",padding:"3px 9px",fontSize:11,color:"#666",fontFamily:"'Space Mono',monospace"}}>resistance {e.sets["Cardio — Zone 2"].resistance}</span>}
+                          {e.sets["Cardio — Zone 2"].minutes&&<span style={{background:"#D4C9B0",border:"1px solid #161616",padding:"3px 9px",fontSize:11,color:"#3A2A18",fontFamily:"'Space Mono',monospace"}}>{e.sets["Cardio — Zone 2"].minutes} min</span>}
+                          {e.sets["Cardio — Zone 2"].resistance&&<span style={{background:"#D4C9B0",border:"1px solid #161616",padding:"3px 9px",fontSize:11,color:"#3A2A18",fontFamily:"'Space Mono',monospace"}}>resistance {e.sets["Cardio — Zone 2"].resistance}</span>}
                         </div>
                       </div>
                     )}
@@ -934,20 +1065,20 @@ export default function WorkoutTracker(){
                         const done=Object.entries(gs).filter(([,v])=>v).map(([k])=>k);
                         if(!done.length)return null;
                         return(<div key={group.name} style={{marginBottom:9}}>
-                          <div style={{color:"#444",fontSize:10,fontFamily:"'Space Mono',monospace",marginBottom:4}}>{group.name}</div>
+                          <div style={{color:"#5A4A2E",fontSize:10,fontFamily:"'Space Mono',monospace",marginBottom:4}}>{group.name}</div>
                           <div style={{display:"flex",gap:5,flexWrap:"wrap"}}>
-                            {done.map(ex=><span key={ex} style={{background:"#0c0c0c",border:"1px solid #161616",padding:"2px 8px",fontSize:10,color:"#555",fontFamily:"'Space Mono',monospace"}}>✓ {ex}</span>)}
+                            {done.map(ex=><span key={ex} style={{background:"#D4C9B0",border:"1px solid #161616",padding:"2px 8px",fontSize:10,color:"#3A2A12",fontFamily:"'Space Mono',monospace"}}>✓ {ex}</span>)}
                           </div>
                         </div>);
                       }
                       const rows=Object.values(gs).filter(s=>s.weight||s.reps);
                       if(!rows.length)return null;
                       return(<div key={group.name} style={{marginBottom:10}}>
-                        <div style={{color:"#444",fontSize:10,fontFamily:"'Space Mono',monospace",marginBottom:2}}>{group.name}</div>
-                        <div style={{color:"#2a2a2a",fontSize:10,fontFamily:"'Space Mono',monospace",fontStyle:"italic",marginBottom:5}}>{e.exercises?.[group.name]||group.exercises[0]}</div>
+                        <div style={{color:"#5A4A2E",fontSize:10,fontFamily:"'Space Mono',monospace",marginBottom:2}}>{group.name}</div>
+                        <div style={{color:"#6A5A3A",fontSize:10,fontFamily:"'Space Mono',monospace",fontStyle:"italic",marginBottom:5}}>{e.exercises?.[group.name]||group.exercises[0]}</div>
                         <div style={{display:"flex",gap:5,flexWrap:"wrap"}}>
                           {rows.map((s,i)=>(
-                            <span key={i} style={{background:"#0c0c0c",border:"1px solid #161616",padding:"3px 8px",fontSize:11,color:"#666",fontFamily:"'Space Mono',monospace"}}>
+                            <span key={i} style={{background:"#D4C9B0",border:"1px solid #161616",padding:"3px 8px",fontSize:11,color:"#3A2A18",fontFamily:"'Space Mono',monospace"}}>
                               {s.weight?`${s.weight}lb`:"BW"} × {s.reps||"—"}
                             </span>
                           ))}
