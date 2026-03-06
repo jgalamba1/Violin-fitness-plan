@@ -354,17 +354,16 @@ export default function WorkoutTracker(){
   const vibrate = useCallback(async (type) => {
     try {
       if (type === 'warning') {
-        await Haptics.impact({ style: ImpactStyle.Medium });
+        await Haptics.impact({ style: ImpactStyle.Heavy });
       } else if (type === 'done') {
-        // Triple pulse — fire three impacts with delays
-        await Haptics.impact({ style: ImpactStyle.Heavy });
-        await new Promise(r => setTimeout(r, 120));
-        await Haptics.impact({ style: ImpactStyle.Heavy });
-        await new Promise(r => setTimeout(r, 120));
-        await Haptics.impact({ style: ImpactStyle.Heavy });
+        // One long sustained buzz via rapid sequential impacts
+        for(let i=0;i<6;i++){
+          await Haptics.impact({ style: ImpactStyle.Heavy });
+          await new Promise(r => setTimeout(r, 50));
+        }
       }
     } catch {
-      try { if(navigator.vibrate) navigator.vibrate(type === 'done' ? [200,100,200,100,400] : 80); } catch {}
+      try { if(navigator.vibrate) navigator.vibrate(type === 'done' ? [800] : 120); } catch {}
     }
   }, []);
 
