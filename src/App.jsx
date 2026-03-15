@@ -127,7 +127,11 @@ const INFO = {
   "Upper Trap Stretch":["Tilt ear to shoulder, gentle hand pressure. Keep opposite shoulder down.",YT("upper trapezius stretch violinists musicians")],
   "Levator Scapulae Stretch":["Rotate head 45° toward armpit, then nod chin down. Most-stressed muscle in violin playing.",YT("levator scapulae stretch neck musicians pain")],
   "Pec Minor Stretch (doorway)":["Arm in goalpost against doorframe, step through. Feel stretch in front of shoulder.",YT("pec minor stretch doorway posture correction")],
-  "Lat Stretch":["Grab overhead support, shift hips away.",YT("lat stretch doorway form")],
+  "Lat Stretch":["Choose one option — all target the same muscle. (1) Overhead anchor: grab a bar or doorframe overhead, shift hips away, 30–45 sec. (2) Wall kneeling: kneel facing wall, hands on wall at shoulder height, sit hips back toward heels, let chest drop, arms extended — 3–5 slow exhales. (3) Doorway: reach one arm overhead and grip the frame, side-bend away, shoulder packed, 30–45 sec each side.",YT("lat stretch doorway form")],
+  "Open Book with Thoracic Rotation":["Lie on your side with knees stacked at 90°. Both arms extended forward at shoulder height. Keep lower arm on floor and lower knees stacked — do not let them separate. Slowly rotate upper arm up and over to the opposite side, following your hand with your eyes, letting your thoracic spine rotate. Lower arm and knees stay anchored. Return slowly. 8–10 reps each side.",YT("open book thoracic rotation stretch")],
+  "Right Sidelying Supported Left Glute Med (PRI)":["Lie on right side, feet on wall, hips and knees at 90°, back rounded. Place 4–5 inch ball between knees. Push right foot into wall. Slide left hip back without arching. Press left knee down into ball — feel left inner thigh engage. Rotate left thigh inward by lifting left lower leg toward ceiling — feel left outer hip (glute med) engage. Hold for 4–5 slow breaths. Relax and repeat 4 more times.",YT("PRI sidelying glute med left AIC")],
+  "Left Sidelying Right Glute Max (PRI)":["Lie on left side, feet on wall, hips and knees at 90°, back rounded. Small towel roll under ankles and left abdominals. Press left hip down — feel left abs lift away from towel roll. Shift right hip forward until you feel a stretch in left outer hip. Turn right knee out keeping left knee on mat, using wall as fulcrum. Turn knee as high as possible without moving right hip back — feel right outer hip (glute max) engage. Hold 4–5 slow breaths. Repeat 4 more times.",YT("PRI sidelying right glute max left AIC")],
+  "First Rib Mobilization":["Sit upright. Reach right hand under chair seat and hold it to anchor right shoulder down. Side-bend head to right, then rotate slightly to look down and right — feel stretch on left side of neck (scalenes). This depresses the left first rib. Take 3–5 slow exhales; the exhalation is what mobilizes the rib. Repeat on opposite side if needed, but left is primary for Left AIC pattern.",YT("first rib mobilization scalene self")],
   "Wrist Flexor Stretch":["Arm extended, palm up, pull fingers back.",YT("wrist flexor stretch musicians violinists")],
   "Wrist Extensor Stretch":["Arm extended, palm down, pull fingers back toward you.",YT("wrist extensor stretch forearm musicians")],
   "Thoracic Rotation Stretch":["Seated, anchor one arm, rotate through mid-back only.",YT("thoracic rotation stretch mobility")],
@@ -188,54 +192,91 @@ const LEG_PRESS_BACK_GROUP = {name:"Lower Back — Auto Added",autoAdded:true,mo
 
 const DAYS = {
   1:{type:"gym",label:"GYM DAY 1",subtitle:"Push + Squat + Core A + Cardio",color:"#AA2A0A",groups:[
-    {name:"Squat Pattern",supersetId:"A",supersetRest:"90 sec",mode:"log",sets:4,reps:"6–8",exercises:["Smith Machine Back Squat","Smith Machine Front Squat","Leg Press (feet high)","Goblet Squat with Band","Barbell Back Squat (Squat Rack)","Barbell Front Squat (Squat Rack)"]},
-    {name:"Horizontal Push",supersetId:"A",mode:"log",sets:4,reps:"6–8",exercises:["Smith Machine Incline Press","Smith Machine Flat Press","Dumbbell Incline Press","Chest Dip (lean forward, max 90°)","Barbell Incline Press (Squat Rack)","Barbell Flat Press (Squat Rack)"]},
-    {name:"Single-Leg Strength",supersetId:"B",supersetRest:"75 sec",mode:"log",sets:3,reps:"8–10",vmoAlt:true,exercises:["Bulgarian Split Squat (DB)","Dumbbell Reverse Lunge","Step-Up onto bench (DB)"]},
-    {name:"Shoulder / Lateral",supersetId:"B",mode:"log",sets:3,reps:"12–15",exercises:["Dumbbell Lateral Raise","Cable Lateral Raise","Machine Lateral Raise","Dumbbell Overhead Press (Unilateral)","Barbell Overhead Press (Squat Rack)"]},
-    {name:"Tricep",supersetId:"C",supersetRest:"60 sec",mode:"log",sets:3,reps:"12",exercises:["Cable Tricep Pushdown","Overhead Cable Extension","Dumbbell Skull Crusher","Tricep Dip (upright torso, max 90°)"]},
-    {name:"Core — Flexion",supersetId:"C",core:true,mode:"log",sets:3,reps:"15",exercises:["Cable Crunch","Ab Machine","Hanging Knee Raise (captain's chair)"]},
-    {name:"Core — Anti-Extension",core:true,mode:"log",sets:3,reps:"45 sec",exercises:["Plank","RKC Plank (squeeze everything)","Ab Wheel Rollout"]},
+    {name:"Squat Pattern",supersetId:"A",supersetRest:"90 sec",mode:"log",sets:3,reps:"6–8",topSet:true,
+      restMobility:"Chin Tuck (wall) — retract chin, hold 5 sec × 5",
+      exercises:["Smith Machine Back Squat","Smith Machine Front Squat","Leg Press (feet high)","Goblet Squat with Band","Barbell Back Squat (Squat Rack)","Barbell Front Squat (Squat Rack)"]},
+    {name:"Horizontal Push",supersetId:"A",mode:"log",sets:3,reps:"6–8",topSet:true,
+      restMobility:"Hip Flexor Stretch — lunge position, 20 sec each side",
+      exercises:["Smith Machine Incline Press","Smith Machine Flat Press","Dumbbell Incline Press","Chest Dip (lean forward, max 90°)","Barbell Incline Press (Squat Rack)","Barbell Flat Press (Squat Rack)"]},
+    {name:"Single-Leg Strength",supersetId:"B",supersetRest:"75 sec",mode:"log",sets:3,reps:"8–10",vmoLock:true,
+      restMobility:"Ankle Circles — 10 each direction each foot",
+      vmoExercises:["Resistance Band TKE","Poliquin Step-Up","Leg Extension Machine"],
+      vmoReps:"15–20",vmoSets:3,
+      exercises:["Bulgarian Split Squat (DB)","Dumbbell Reverse Lunge","Step-Up onto bench (DB)"]},
+    {name:"Shoulder / Lateral",supersetId:"B",mode:"log",sets:3,reps:"12–15",
+      restMobility:"Thoracic Rotation — seated, rotate 10× each side",
+      exercises:["Cable Lateral Raise","Machine Lateral Raise","Dumbbell Lateral Raise","Dumbbell Overhead Press (Unilateral)","Barbell Overhead Press (Squat Rack)"]},
+    {name:"Tricep",mode:"log",sets:2,reps:"12",
+      restMobility:"Wrist Extensor Stretch — 20 sec each hand",
+      exercises:["Cable Tricep Pushdown","Overhead Cable Extension","Dumbbell Skull Crusher","Tricep Dip (upright torso, max 90°)"]},
+    {name:"Core — Anti-Extension",core:true,mode:"log",sets:2,reps:"45 sec",
+      exercises:["Plank","RKC Plank (squeeze everything)","Ab Wheel Rollout"]},
     CARDIO_GROUP,
   ]},
   2:{type:"gym",label:"GYM DAY 2",subtitle:"Pull + Violin Priority + Core B",color:"#0A40AA",groups:[
-    {name:"Vertical Pull",supersetId:"A",supersetRest:"90 sec",mode:"log",sets:4,reps:"6–8",exercises:["Lat Pulldown","Assisted Pull-Up Machine","Single-Arm Cable Pulldown"]},
-    {name:"Serratus Anterior",supersetId:"A",violin:true,mode:"log",sets:4,reps:"12–15",exercises:["Single-Arm Cable Serratus Punch","Cable Serratus Press","Cable Pullover (cable set high, arc down)","Dumbbell Pullover (flat bench, controlled)"]},
-    {name:"Horizontal Pull — Mid Trap",supersetId:"B",violin:true,supersetRest:"75 sec",mode:"log",sets:4,reps:"10–12",exercises:["Low Cable Row (elbows flared)","Seated Cable Row (wide grip)","Dumbbell Chest-Supported Row"]},
-    {name:"Bicep",supersetId:"B",mode:"log",sets:3,reps:"12",exercises:["Dumbbell Curl","Cable Curl","Hammer Curl"]},
-    {name:"Face Pull / Rear Delt / Rotator Cuff",violin:true,nonneg:true,violinStraight:true,violinRest:"45–50 sec",mode:"log",sets:4,reps:"15",exercises:["Cable Face Pull (rope, eye height)","Cable Pull-Apart (low-to-high)","Reverse Pec Deck Machine"]},
-    {name:"External Rotation — Rotator Cuff",violin:true,violinStraight:true,violinRest:"45–50 sec",mode:"log",sets:3,reps:"15",exercises:["Cable External Rotation (elbow at side)","Dumbbell Side-Lying External Rotation","Cable External Rotation (90° abducted)"]},
-    {name:"Lower Trap & Scapular Stability",violin:true,violinStraight:true,violinRest:"45–50 sec",mode:"log",sets:4,reps:"10 each",exercises:["Y-T-W on Incline Bench (light DB)","Cable Y-Raise","Prone Y-T-W on incline bench"]},
-    {name:"Upper Trap — Left Priority",violin:true,violinStraight:true,violinRest:"60 sec",mode:"log",sets:3,reps:"10–12",exercises:["Dumbbell Shrug (slow + pause)","Single-Arm Farmer's Carry (left priority)"]},
-    {name:"Core — Anti-Rotation",core:true,mode:"log",sets:3,reps:"10 each",exercises:["Pallof Press (cable, both sides)","Pallof Press with Rotation","Half-Kneeling Cable Chop"]},
+    {name:"Vertical Pull",supersetId:"A",supersetRest:"90 sec",mode:"log",sets:3,reps:"6–8",topSet:true,
+      restMobility:"Pec Minor Stretch — doorway, 20 sec each side",
+      exercises:["Lat Pulldown","Assisted Pull-Up Machine","Single-Arm Cable Pulldown"]},
+    {name:"Serratus Anterior",supersetId:"A",violin:true,mode:"log",sets:3,reps:"12–15",
+      restMobility:"Chin Tuck (wall) — retract chin, hold 5 sec × 5",
+      exercises:["Single-Arm Cable Serratus Punch","Cable Serratus Press","Cable Pullover (cable set high, arc down)","Dumbbell Pullover (flat bench, controlled)"]},
+    {name:"Horizontal Pull — Mid Trap",supersetId:"B",violin:true,supersetRest:"75 sec",mode:"log",sets:3,reps:"10–12",topSet:true,
+      restMobility:"Hip Flexor Stretch — lunge position, 20 sec each side",
+      exercises:["Low Cable Row (elbows flared)","Seated Cable Row (wide grip)","Dumbbell Chest-Supported Row"]},
+    {name:"Bicep",supersetId:"B",mode:"log",sets:2,reps:"12",
+      restMobility:"Wrist Flexor Stretch — 20 sec each hand",
+      exercises:["Cable Curl","Dumbbell Curl","Hammer Curl"]},
+    {name:"Face Pull / Rear Delt",violin:true,nonneg:true,violinStraight:true,violinRest:"45–50 sec",mode:"log",sets:3,reps:"15",
+      exercises:["Cable Face Pull (rope, eye height)","Cable Pull-Apart (low-to-high)","Reverse Pec Deck Machine"]},
+    {name:"External Rotation — Rotator Cuff",violin:true,violinStraight:true,violinRest:"45–50 sec",mode:"log",sets:2,reps:"15",weeklyAlt:"A",
+      exercises:["Cable External Rotation (elbow at side)","Cable External Rotation (90° abducted)","Dumbbell Side-Lying External Rotation"]},
+    {name:"Lower Trap & Scapular Stability",violin:true,violinStraight:true,violinRest:"45–50 sec",mode:"log",sets:2,reps:"10 each",weeklyAlt:"B",
+      exercises:["Cable Y-Raise","Y-T-W on Incline Bench (light DB)","Prone Y-T-W on incline bench"]},
+    {name:"Upper Trap — Left Priority",violin:true,violinStraight:true,violinRest:"60 sec",mode:"log",sets:2,reps:"10–12",
+      exercises:["Dumbbell Shrug (slow + pause)","Single-Arm Farmer's Carry (left priority)","Waiter's Carry — Left Arm (unlock after 8 wks Farmer's Carry)"]},
+    {name:"Core — Anti-Rotation",core:true,mode:"log",sets:2,reps:"10 each",
+      exercises:["Pallof Press (cable, both sides)","Pallof Press with Rotation","Half-Kneeling Cable Chop"]},
   ]},
   3:{type:"gym",label:"GYM DAY 3",subtitle:"Lower Body + Core C + Cardio",color:"#0A7A2A",groups:[
-    {name:"Hip Hinge",supersetId:"A",supersetRest:"90 sec",mode:"log",sets:4,reps:"8–10",exercises:["Romanian Deadlift (Smith or DB)","Smith Machine Conventional Deadlift","Dumbbell Single-Leg RDL","Barbell Conventional Deadlift"]},
-    {name:"Quad Accessory",supersetId:"A",mode:"log",sets:3,reps:"12–15",exercises:["Leg Extension Machine","Smith Machine Split Squat (lighter, higher rep)","Barbell Split Squat (Squat Rack)"]},
-    {name:"Hamstring Isolation",supersetId:"B",supersetRest:"75 sec",mode:"log",sets:3,reps:"10–12",exercises:["Leg Curl Machine","Single-Leg Curl Machine"]},
-    {name:"Core — Rotation",supersetId:"B",core:true,mode:"log",sets:3,reps:"12 each",exercises:["Cable Woodchop (high-to-low)","Cable Woodchop (low-to-high)","Landmine Rotation"]},
-    {name:"Hip Abduction / Glute Med",supersetId:"C",supersetRest:"60 sec",mode:"log",sets:3,reps:"15",exercises:["Hip Abduction Machine","Cable Hip Abduction"]},
-    {name:"Core — Lateral Stability",supersetId:"C",core:true,mode:"log",sets:3,reps:"40 sec each",exercises:["Side Plank","Side Plank with Hip Dip","Copenhagen Plank"]},
-    {name:"Calf",mode:"log",sets:3,reps:"15–20",exercises:["Standing Calf Raise Machine","Seated Calf Raise Machine"]},
+    {name:"Hip Hinge",supersetId:"A",supersetRest:"90 sec",mode:"log",sets:3,reps:"8–10",topSet:true,
+      restMobility:"Thoracic Rotation — seated, rotate 10× each side",
+      exercises:["Romanian Deadlift (Smith or DB)","Smith Machine Conventional Deadlift","Dumbbell Single-Leg RDL","Barbell Conventional Deadlift"]},
+    {name:"Quad Accessory",supersetId:"A",mode:"log",sets:3,reps:"12–15",
+      restMobility:"Ankle Circles — 10 each direction each foot",
+      exercises:["Leg Extension Machine","Smith Machine Split Squat (lighter, higher rep)","Barbell Split Squat (Squat Rack)"]},
+    {name:"Hamstring Isolation",supersetId:"B",supersetRest:"75 sec",mode:"log",sets:3,reps:"10–12",
+      restMobility:"Hip Flexor Stretch — lunge position, 20 sec each side",
+      exercises:["Leg Curl Machine","Single-Leg Curl Machine"]},
+    {name:"Core — Rotation / Lateral",supersetId:"B",core:true,mode:"log",sets:2,reps:"12 each",weeklyAlt:"AB",
+      altA:{name:"Core — Rotation",exercises:["Cable Woodchop (high-to-low)","Cable Woodchop (low-to-high)","Landmine Rotation"]},
+      altB:{name:"Core — Lateral Stability",reps:"40 sec each",exercises:["Side Plank","Side Plank with Hip Dip","Copenhagen Plank"]},
+      exercises:["Cable Woodchop (high-to-low)","Cable Woodchop (low-to-high)","Landmine Rotation"]},
+    {name:"Hip Abduction / Glute Med",mode:"log",sets:3,reps:"15",
+      restMobility:"Piriformis Stretch — figure-4, 20 sec each side",
+      exercises:["Hip Abduction Machine","Cable Hip Abduction"]},
+    {name:"Calf",mode:"log",sets:2,reps:"15–20",exercises:["Standing Calf Raise Machine","Seated Calf Raise Machine"]},
     CARDIO_GROUP,
   ]},
   4:{type:"home",label:"HOME DAY A",subtitle:"Violin Health + Flexibility",color:"#5A10AA",groups:[
     {name:"Serratus Anterior",violin:true,mode:"reps",sets:3,reps:"12",exercises:["Serratus Wall Slide","Scapular Push-Up","Bear Crawl Hold with scapular protraction"]},
-    {name:"Lower & Mid Trapezius",violin:true,mode:"reps",sets:3,reps:"10 each",exercises:["Floor Y-T-W (prone)","Superman hold with Y-arms","Wall Angel"]},
-    {name:"Rotator Cuff",violin:true,mode:"reps",sets:3,reps:"15–20",exercises:["Band Pull-Apart","Side-Lying External Rotation (no weight)","Prone External Rotation"]},
+    {name:"Lower & Mid Trapezius",violin:true,mode:"reps",sets:2,reps:"10 each",suppressIfDay:2,suppressNote:"Covered in Gym Day 2 — Lower Trap block",exercises:["Floor Y-T-W (prone)","Superman hold with Y-arms","Wall Angel"]},
+    {name:"Rotator Cuff",violin:true,mode:"reps",sets:2,reps:"15–20",suppressIfDay:2,suppressNote:"Covered in Gym Day 2 — External Rotation block",exercises:["Band Pull-Apart","Side-Lying External Rotation (no weight)","Prone External Rotation"]},
     {name:"Forearm Extensors",violin:true,movedNote:true,mode:"reps",sets:3,reps:"15",exercises:["Dumbbell Wrist Extension","Reverse DB Curl","Wrist Extension (water bottle)","Forearm pronation/supination"]},
-    {name:"Push Strength",mode:"reps",sets:4,reps:"max",exercises:["Push-Up","Decline Push-Up","Diamond Push-Up"]},
-    {name:"Core — Deep Stabilizers",core:true,mode:"reps",sets:3,reps:"8 each",exercises:["Dead Bug","Bird Dog"]},
-    {name:"Deep Neck Flexors",violin:true,mode:"reps",sets:3,reps:"10",exercises:["Chin Tuck (supine on floor)","Chin Tuck against wall"]},
+    {name:"Push Strength",mode:"reps",sets:3,reps:"max",suppressIfDay:1,suppressNote:"Chest/push trained in Gym Day 1",exercises:["Push-Up","Decline Push-Up","Diamond Push-Up"]},
+    {name:"Core — Deep Stabilizers",core:true,mode:"reps",sets:2,reps:"8 each",exercises:["Dead Bug","Bird Dog"]},
+    {name:"Deep Neck Flexors",violin:true,mode:"reps",sets:2,reps:"10",exercises:["Chin Tuck (supine on floor)","Chin Tuck against wall"]},
     {name:"Flexibility — Violin Priority 🎻",violin:true,mode:"check",duration:"30–45 sec each",exercises:["Upper Trap Stretch","Levator Scapulae Stretch","Pec Minor Stretch (doorway)","Wrist Flexor Stretch","Wrist Extensor Stretch"]},
     {name:"Flexibility — Upper Body",mode:"check",duration:"30–45 sec each",exercises:["Lat Stretch","Thoracic Rotation Stretch","Thread the Needle","Neck Side Bend"]},
   ]},
-  5:{type:"home",label:"HOME DAY B",subtitle:"Active Recovery + Full Body Flexibility",color:"#AA6A00",groups:[
+  5:{type:"home",label:"HOME DAY B",subtitle:"Active Recovery + PRI + Flexibility",color:"#AA6A00",groups:[
     {name:"Violin Mobility",violin:true,mode:"reps",sets:2,reps:"10 each",exercises:["Serratus Wall Slide","Floor Y-T-W (prone)","Chin Tuck against wall","Band Pull-Apart"]},
     {name:"Core — Deep Stabilizers",core:true,mode:"reps",sets:2,reps:"8 each",exercises:["Dead Bug","Bird Dog"]},
-    {name:"Lower Body",mode:"reps",sets:2,reps:"12 each",exercises:["Reverse Lunge (bodyweight)","Lateral Lunge","Single-Leg Glute Bridge","Side-Lying Hip Abduction","Clamshell"]},
-    {name:"Flexibility — Violin & Upper Body 🎻",violin:true,mode:"check",duration:"45 sec each",exercises:["Upper Trap Stretch","Levator Scapulae Stretch","Pec Minor Stretch (doorway)","Wrist Flexor Stretch","Wrist Extensor Stretch","Lat Stretch","Thoracic Rotation Stretch","Thread the Needle"]},
+    {name:"PRI — Hip & Pelvis Reset 🔄",violin:true,mode:"reps",sets:1,reps:"5 breaths × 5 reps",exercises:["Right Sidelying Supported Left Glute Med (PRI)","Left Sidelying Right Glute Max (PRI)"]},
+    {name:"First Rib Mobilization",violin:true,mode:"reps",sets:1,reps:"3–5 breaths each side",exercises:["First Rib Mobilization"]},
+    {name:"Lower Body",mode:"reps",sets:2,reps:"12 each",exercises:["Lateral Lunge","Single-Leg Glute Bridge","Side-Lying Hip Abduction","Clamshell"]},
+    {name:"Flexibility — Violin & Upper Body 🎻",violin:true,mode:"check",duration:"45 sec each",exercises:["Upper Trap Stretch","Wrist Flexor Stretch","Wrist Extensor Stretch","Lat Stretch","Open Book with Thoracic Rotation"]},
     {name:"Flexibility — Lower Body",mode:"check",duration:"45 sec each",exercises:["Hip Flexor Stretch (couch stretch)","Hamstring Stretch (standing)","Piriformis Stretch (figure-4)"]},
-    {name:"Flexibility — Full Body",mode:"check",duration:"30–45 sec",exercises:["Cat-Cow","Child's Pose","Neck Side Bend"]},
+    {name:"Flexibility — Full Body",mode:"check",duration:"30–45 sec",exercises:["Cat-Cow"]},
   ]},
   6:{type:"home",label:"HOME DAY C",subtitle:"Lotus Progression",color:"#AA2A0A",
     lotusPhases:[
@@ -346,37 +387,24 @@ function seedWeight(history,exName){
   return Math.min(...estimates);
 }
 
-function getPhase(history){
-  const dates=Object.values(history).map(e=>e.date).filter(Boolean).sort();
-  if(!dates.length)return{phase:"linear",weekNum:0,label:null};
-  const firstDate=new Date(dates[0]);
-  const weeks=Math.floor((Date.now()-firstDate)/(1000*60*60*24*7));
-  if(weeks<26)return{phase:"linear",weekNum:weeks,label:null};
-  const blockWeek=(weeks-26)%8;
-  if(blockWeek<4){
-    return{phase:"volume",weekNum:weeks,blockWeek:blockWeek+1,
-      label:"VOLUME PHASE — Week "+(blockWeek+1)+"/4 · higher reps, moderate weight"};
-  } else {
-    return{phase:"intensity",weekNum:weeks,blockWeek:blockWeek-3,
-      label:"INTENSITY PHASE — Week "+(blockWeek-3)+"/4 · lower reps, heavier weight"};
+function getPhase(cycle){
+  // Linear progression throughout. Deload suggested after every 4th completed cycle.
+  const count=cycle?.count||0;
+  const isDeload=count>0&&count%4===0&&(!cycle.done||cycle.done.length===0);
+  if(isDeload){
+    return{phase:"deload",label:"DELOAD WEEK — Cycle "+count+" complete · use 55–60% of normal weight, focus on form"};
   }
+  return{phase:"linear",label:null};
 }
 
-function getSuggestion(history,dayNum,groupName,repsStr,chosenEx){
+function getSuggestion(history,cycle,dayNum,groupName,repsStr,chosenEx){
   const repsMatch=repsStr?repsStr.match(/\d+/g):null;
   const baseMax=repsMatch?Math.max(...repsMatch.map(Number)):10;
   const baseMin=repsMatch&&repsMatch.length>1?Math.min(...repsMatch.map(Number)):Math.max(3,baseMax-2);
-  const phase=getPhase(history);
+  const phase=getPhase(cycle);
 
   let repTarget=baseMax;
   let repTargetLabel=baseMin<baseMax?(baseMin+"–"+baseMax+" reps"):baseMax+" reps";
-  if(phase.phase==="volume"){
-    repTarget=baseMax+3;
-    repTargetLabel=(baseMax+1)+"–"+(baseMax+3)+" reps (volume)";
-  } else if(phase.phase==="intensity"){
-    repTarget=Math.max(3,baseMin-2);
-    repTargetLabel=Math.max(3,baseMin-2)+"–"+(baseMin-1)+" reps (intensity, heavier)";
-  }
 
   const exKey=chosenEx?groupName+":"+chosenEx:groupName;
   const sessions=Object.entries(history).sort(([a],[b])=>Number(b)-Number(a))
@@ -415,31 +443,15 @@ function getSuggestion(history,dayNum,groupName,repsStr,chosenEx){
     }
   }
 
-  if(phase.phase==="linear"){
-    return{weight:lastWeight,suggest:suggestIncrease?lastWeight+5:lastWeight,hitReps:suggestIncrease,phase,repTargetLabel,
-      note:suggestIncrease?"Hit target — add 5 lbs":"Target "+repTargetLabel};
+  if(phase.phase==="deload"){
+    const deloadWeight=Math.max(5,Math.round(lastWeight*0.55/5)*5);
+    return{weight:lastWeight,suggest:deloadWeight,hitReps:false,phase,
+      repTargetLabel:baseMax+" reps (deload — light, perfect form)",
+      note:"Deload week — 55% load, full ROM, no grind"};
   }
-  if(phase.phase==="volume"){
-    return{weight:lastWeight,suggest:suggestIncrease?lastWeight+5:lastWeight,hitReps:suggestIncrease,phase,repTargetLabel,
-      note:suggestIncrease?"Volume target hit — increase weight":"Target "+repTargetLabel};
-  }
-  if(phase.phase==="intensity"){
-    // Only apply the 10% jump if this is the first intensity session (previous session was at a lower weight)
-    // If already at intensity weight, hold until reps are hit
-    const prevWeight=sessions.length>=2?(()=>{
-      const [,prev]=sessions[1];
-      const prevSets=prev.sets[exKey]||prev.sets[groupName];
-      if(!prevSets)return null;
-      const pw=Object.values(prevSets).map(s=>Number(s?.weight)).filter(w=>w>0);
-      return pw.length?Math.max(...pw):null;
-    })():null;
-    const isFirstIntensitySession=prevWeight!=null&&prevWeight<lastWeight;
-    const intensitySuggest=isFirstIntensitySession?lastWeight:Math.ceil(lastWeight*1.1/5)*5;
-    const suggest=suggestIncrease?lastWeight+5:intensitySuggest;
-    return{weight:lastWeight,suggest,hitReps:suggestIncrease,phase,repTargetLabel,
-      note:suggestIncrease?"Strength target hit — increase":"Target "+repTargetLabel+" @ "+intensitySuggest+"lb — hold until hit"};
-  }
-  return null;
+  // Linear: hit reps → +5lb, otherwise hold
+  return{weight:lastWeight,suggest:suggestIncrease?lastWeight+5:lastWeight,hitReps:suggestIncrease,phase,repTargetLabel,
+    note:suggestIncrease?"Hit target — add 5 lbs":"Target "+repTargetLabel};
 }
 
 
@@ -462,6 +474,58 @@ function getCardioHistory(history,dayNum){
   return null;
 }
 
+// ── VMO unlock status ────────────────────────────────────────────────────────
+// Unlock Single-Leg Strength after 3 qualifying sessions:
+// Goblet Squat with Band ≥20lb for 3×12, OR Leg Extension ≥30lb for 3×15
+function getVmoUnlockStatus(history){
+  // Requires BOTH: 3 qualifying Hip Abduction sessions AND 3 qualifying VMO isolation sessions
+  const HIP_MIN_W=50, HIP_MIN_REPS=15, HIP_SETS=3;
+  const VMO_MIN_W=30, VMO_MIN_REPS=15, VMO_SETS=3;
+  const VMO_KEYS=["Leg Extension","Resistance Band TKE","Poliquin Step-Up"];
+  let hipSessions=0, vmoSessions=0;
+  for(const e of Object.values(history)){
+    let hipQual=false, vmoQual=false;
+    for(const [key,sets] of Object.entries(e.sets||{})){
+      const vals=Object.values(sets).filter(s=>s&&typeof s==="object");
+      if(key.includes("Hip Abduction")){
+        const q=vals.filter(s=>Number(s.weight)>=HIP_MIN_W&&Number(s.reps)>=HIP_MIN_REPS);
+        if(q.length>=HIP_SETS)hipQual=true;
+      }
+      if(VMO_KEYS.some(k=>key.includes(k))){
+        const q=vals.filter(s=>(Number(s.weight)>=VMO_MIN_W||key.includes("TKE")||key.includes("Poliquin"))&&Number(s.reps)>=VMO_MIN_REPS);
+        if(q.length>=VMO_SETS)vmoQual=true;
+      }
+    }
+    if(hipQual)hipSessions++;
+    if(vmoQual)vmoSessions++;
+  }
+  const needed=3;
+  const unlocked=hipSessions>=needed&&vmoSessions>=needed;
+  return{unlocked,hipCount:Math.min(hipSessions,needed),vmoCount:Math.min(vmoSessions,needed),needed,
+    criteria:"Hip Abduction ≥50lb × 3×15 (×3 sessions) + VMO exercise ≥30lb × 3×15 (×3 sessions)"};
+}
+
+// ── Cross-day suppression: check if a gym day was done this cycle ─────────────
+function isDayDoneThisCycle(history,cycle,dayNum){
+  if(!cycle||!cycle.start)return false;
+  return Object.values(history).some(e=>e.day===dayNum&&
+    new Date(e.date)>= new Date(cycle.start));
+}
+
+// ── Weekly alternation: which alt to show this week ──────────────────────────
+function getWeeklyAlt(history){
+  const dates=Object.values(history).map(e=>e.date).filter(Boolean).sort();
+  if(!dates.length)return "A";
+  const firstDate=new Date(dates[0]);
+  const weeks=Math.floor((Date.now()-firstDate)/(1000*60*60*24*7));
+  return weeks%2===0?"A":"B";
+}
+
+// ── Recovery score ─────────────────────────────────────────────────────────────
+function calcRecoveryScore(sleep,soreness,motivation){
+  return Math.round((sleep/8*40)+((6-soreness)/5*30)+(motivation/5*30));
+}
+
 function buildRenderUnits(groups){
   const units=[];let i=0;
   while(i<groups.length){
@@ -471,7 +535,8 @@ function buildRenderUnits(groups){
       const pair=[g];
       if(i+1<groups.length&&groups[i+1].supersetId===g.supersetId&&!groups[i+1].violinStraight){pair.push(groups[i+1]);i+=2;}
       else{i++;}
-      units.push({type:"superset",label:g.supersetId,rest:g.supersetRest,groups:pair});
+      if(pair.length===1){units.push({type:"straight",group:pair[0]});}
+      else{units.push({type:"superset",label:g.supersetId,rest:g.supersetRest,groups:pair});}
     } else if(g.violinStraight){
       const vGroups=[g];i++;
       while(i<groups.length&&groups[i].violinStraight){vGroups.push(groups[i]);i++;}
@@ -486,6 +551,10 @@ function buildRenderUnits(groups){
 export default function WorkoutTracker(){
   const [currentDay,setCurrentDay]=useState(1);
   const [sessionData,setSessionData]=useState({});
+  const [recoveryData,setRecoveryData]=useState({sleep:7,soreness:2,motivation:3});
+  const [recoveryDone,setRecoveryDone]=useState(false);
+  const [showRecovery,setShowRecovery]=useState(false);
+  const [recoveryScore,setRecoveryScore]=useState(null);
   const [history,setHistory]=useState({});
   const [view,setView]=useState("home");
   const [loading,setLoading]=useState(true);
@@ -497,7 +566,7 @@ export default function WorkoutTracker(){
   const [infoEx,setInfoEx]=useState(null);
   const [openVMO,setOpenVMO]=useState(false);
 
-  const [cycle, setCycle] = useState({start:null, done:[]});
+  const [cycle, setCycle] = useState({start:null, done:[], count:0});
   const [lotusLast, setLotusLast] = useState(null);
 
   // ── Rest timer ────────────────────────────────────────────────────────────
@@ -520,9 +589,9 @@ export default function WorkoutTracker(){
     }
   }, []);
 
-  const startTimer = useCallback((seconds, label) => {
+  const startTimer = useCallback((seconds, label, mobility) => {
     clearInterval(timerRef.current);
-    setTimer({seconds, total:seconds, label, running:true});
+    setTimer({seconds, total:seconds, label, mobility, running:true});
     timerRef.current = setInterval(() => {
       setTimer(t => {
         if(!t||!t.running) return t;
@@ -549,6 +618,10 @@ export default function WorkoutTracker(){
   // Parse rest string like "90 sec", "45–50 sec" -> seconds
   const parseRest = (restStr) => {
     if(!restStr) return 90;
+    if(/min/i.test(restStr)){
+      const m = restStr.match(/([0-9]+)/);
+      return m ? parseInt(m[1]) * 60 : 90;
+    }
     const m = restStr.match(/([0-9]+)/);
     return m ? parseInt(m[1]) : 90;
   };
@@ -602,8 +675,8 @@ export default function WorkoutTracker(){
       const elapsed=(Date.now()-cycleStart)/(1000*60*60*24);
       let newCycle;
       if(newDone.length>=5||elapsed>=10){
-        // Cycle complete — reset
-        newCycle={start:null,done:[]};
+        // Cycle complete — reset, increment count
+        newCycle={start:null,done:[],count:(cycle.count||0)+1};
       } else {
         newCycle={start:cycleStart,done:newDone};
       }
@@ -626,12 +699,12 @@ export default function WorkoutTracker(){
 
   const day=DAYS[currentDay];
 
-  const renderTimerButton = (restStr, label) => {
+  const renderTimerButton = (restStr, label, mobility) => {
     const secs = parseRest(restStr);
     const active = timer && timer.label === label;
     return (
       <button
-        onClick={()=> active ? stopTimer() : startTimer(secs, label)}
+        onClick={()=> active ? stopTimer() : startTimer(secs, label, mobility)}
         style={{
           background: active ? (timer.running ? "#AA6800" : "#0A7A2A") : "#BFB298",
           border: `1px solid ${active ? (timer.running ? "#AA6800" : "#0A7A2A") : "#BFB298"}`,
@@ -659,8 +732,134 @@ export default function WorkoutTracker(){
   const renderGroupContent=(group)=>{
     const chosen=selectedEx[group.name]||group.exercises[0];
     const exInfo=INFO[chosen];
+    const weekAlt=getWeeklyAlt(history);
+    // Recovery modifiers
+    const recAmber=recoveryScore!==null&&recoveryScore>=50&&recoveryScore<70;
+    const recRed=recoveryScore!==null&&recoveryScore<50;
+    const effectiveSets=group.sets; // set count unchanged; top set dropped via skipTopSet flag
+    const skipTopSet=(recRed||recAmber)&&activeGroup.topSet;
+    const weightMod=recRed?0.85:1.0; // amber: back-offs unchanged (top set removal is the reduction); red: back-offs at 85% of normal
+
+    // Cross-day suppress check
+    if(group.suppressIfDay&&isDayDoneThisCycle(history,cycle,group.suppressIfDay)){
+      return(
+        <div style={{padding:"10px 14px",fontFamily:"'Space Mono',monospace",fontSize:10,
+          color:"#6A5A3A",background:"#D4C9A0",borderTop:"1px solid #C8BBA0",
+          fontStyle:"italic"}}>
+          ⤵ {group.suppressNote||"Covered in recent gym session — skipping"}
+        </div>
+      );
+    }
+
+    // VMO lock check — when locked, render VMO prereq exercises instead
+    if(group.vmoLock){
+      const vmo=getVmoUnlockStatus(history);
+      if(!vmo.unlocked){
+        const vmoGroup={
+          ...group,
+          name:group.name,
+          exercises:group.vmoExercises||["Resistance Band TKE","Poliquin Step-Up","Leg Extension Machine"],
+          reps:group.vmoReps||"15–20",
+          sets:group.vmoSets||3,
+          vmoLock:false, // prevent recursion
+        };
+        const vmoChosen=selectedEx[group.name]||vmoGroup.exercises[0];
+        const vmoInfo=INFO[vmoChosen];
+        return(
+          <div style={{paddingBottom:4}}>
+            <div style={{padding:"8px 14px 6px",background:"#AA2A0A10",borderBottom:"1px solid #AA2A0A20"}}>
+              <div style={{fontFamily:"'Space Mono',monospace",fontSize:9,color:"#AA2A0A",letterSpacing:".12em",marginBottom:3}}>
+                🔒 PRE-UNLOCK: BUILD VMO + GLUTE MED FIRST
+              </div>
+              <div style={{fontFamily:"'Space Mono',monospace",fontSize:9,color:"#5A4A2E",lineHeight:1.6}}>
+                Hip Abduction {vmo.hipCount}/{vmo.needed} · VMO {vmo.vmoCount}/{vmo.needed} · {vmo.criteria}
+              </div>
+            </div>
+            {/* Exercise selector */}
+            <div style={{display:"flex",gap:5,flexWrap:"wrap",padding:"10px 0 6px"}}>
+              {vmoGroup.exercises.map(ex=>(
+                <button key={ex} onClick={()=>setSelectedEx(p=>({...p,[group.name]:ex}))}
+                  style={{background:vmoChosen===ex?"#AA2A0A":"#D4C9B0",border:`1px solid ${vmoChosen===ex?"#AA2A0A":"#C8BBA0"}`,
+                    color:vmoChosen===ex?"#fff":"#3A2A12",padding:"4px 10px",cursor:"pointer",
+                    fontFamily:"'Space Mono',monospace",fontSize:9,letterSpacing:".05em"}}>
+                  {ex}
+                </button>
+              ))}
+            </div>
+            {vmoInfo&&(
+              <div style={{background:"#D4C9B0",border:"1px solid #C8BBA0",padding:"8px 10px",marginBottom:8}}>
+                <div style={{color:"#3A2A12",fontSize:9,fontFamily:"'Space Mono',monospace",lineHeight:1.55,marginBottom:6}}>{vmoInfo[0]}</div>
+                <a href={vmoInfo[1]} target="_blank" rel="noreferrer"
+                  style={{color:"#AA2A0A",fontSize:9,fontFamily:"'Space Mono',monospace",textDecoration:"none",border:"1px solid #AA2A0A40",padding:"2px 8px"}}>▶ WATCH</a>
+              </div>
+            )}
+            <div style={{display:"grid",gridTemplateColumns:"28px 1fr 1fr",gap:5,marginBottom:6}}>
+              {["SET","WEIGHT (lbs)","REPS"].map(h=><div key={h} style={{color:"#6A5A3A",fontSize:9,letterSpacing:".1em",fontFamily:"'Space Mono',monospace"}}>{h}</div>)}
+            </div>
+            {Array.from({length:Math.max(1,vmoGroup.sets-(recRed?2:recAmber?1:0))}).map((_,i)=>(
+              <div key={i} style={{display:"grid",gridTemplateColumns:"28px 1fr 1fr",gap:5,marginBottom:4,alignItems:"center"}}>
+                <div style={{color:"#6A5A3A",fontSize:11,textAlign:"center",fontFamily:"'Space Mono',monospace"}}>{i+1}</div>
+                <input style={{background:"#C8BBA0",border:"1px solid #1c1c1c",color:"#0A0806",padding:"8px 10px",fontFamily:"'Space Mono',monospace",fontSize:13,width:"100%",outline:"none"}}
+                  type="number" placeholder="—"
+                  value={sessionData[group.name+":VMO:"+vmoChosen]?.[i]?.weight||""}
+                  onChange={e=>updateSet(group.name+":VMO:"+vmoChosen,i,"weight",e.target.value)}/>
+                <input style={{background:"#C8BBA0",border:"1px solid #1c1c1c",color:"#0A0806",padding:"8px 10px",fontFamily:"'Space Mono',monospace",fontSize:13,width:"100%",outline:"none"}}
+                  type="number" placeholder={vmoGroup.reps.split(/[–—]/)[0]}
+                  value={sessionData[group.name+":VMO:"+vmoChosen]?.[i]?.reps||""}
+                  onChange={e=>updateSet(group.name+":VMO:"+vmoChosen,i,"reps",e.target.value)}/>
+              </div>
+            ))}
+          </div>
+        );
+      }
+    }
+
+    // Weekly alternation — override exercises if weeklyAlt set
+    let activeGroup=group;
+    if(group.weeklyAlt==="A"&&weekAlt==="B"){
+      // This group skips this week — show note
+      return(
+        <div style={{padding:"10px 14px",fontFamily:"'Space Mono',monospace",fontSize:10,
+          color:"#6A5A3A",background:"#D4C9A0",borderTop:"1px solid #C8BBA0",fontStyle:"italic"}}>
+          ↻ Week B — skipped this week (alternating with Lower Trap block)
+        </div>
+      );
+    }
+    if(group.weeklyAlt==="B"&&weekAlt==="A"){
+      return(
+        <div style={{padding:"10px 14px",fontFamily:"'Space Mono',monospace",fontSize:10,
+          color:"#6A5A3A",background:"#D4C9A0",borderTop:"1px solid #C8BBA0",fontStyle:"italic"}}>
+          ↻ Week A — skipped this week (alternating with External Rotation block)
+        </div>
+      );
+    }
+    // Core Day 3 weekly alt between rotation and lateral
+    if(group.weeklyAlt==="AB"){
+      const useAlt=weekAlt==="B"&&group.altB;
+      if(useAlt)activeGroup={...group,...group.altB,exercises:group.altB.exercises,reps:group.altB.reps||group.reps};
+      else if(group.altA)activeGroup={...group,...group.altA,exercises:group.altA.exercises};
+    }
+
     return(
       <div style={{paddingBottom:4}}>
+        {/* Top-set banner */}
+        {activeGroup.topSet&&(
+          <div style={{padding:"5px 0",fontFamily:"'Space Mono',monospace",fontSize:9,
+            letterSpacing:".1em",color:"#AA6800",marginBottom:8}}>
+            📈 TOP SET + BACK-OFF: Set 1 → work up to heavy 3–5 reps. Sets 2–{effectiveSets} → drop to 70–75%, 8–10 reps.
+          </div>
+        )}
+        {(recRed||recAmber)&&group.mode==="log"&&!group.cardio&&(
+          <div style={{padding:"5px 10px",fontFamily:"'Space Mono',monospace",fontSize:9,
+            letterSpacing:".08em",marginBottom:8,
+            background:recRed?"#AA2A0A12":"#FFB83318",
+            borderLeft:`2px solid ${recRed?"#AA2A0A":"#AA6800"}`,
+            color:recRed?"#AA2A0A":"#AA6800"}}>
+            {recRed
+              ?"↓ LOW READINESS: top set skipped · back-offs at 85% of normal · skip if needed"
+              :"↓ MODERATE: top set skipped · back-offs at normal weight"}
+          </div>
+        )}
         {group.mode!=="check"&&!group.cardio&&(
           <div style={{marginBottom:12}}>
             <div style={{color:"#6A5A3A",fontSize:9,letterSpacing:".2em",fontFamily:"'Space Mono',monospace",marginBottom:6}}>SELECT EXERCISE</div>
@@ -685,28 +884,76 @@ export default function WorkoutTracker(){
           </div>
         )}
         {group.mode==="log"&&!group.cardio&&(()=>{
-          const sug=getSuggestion(history,currentDay,group.name,group.reps,chosen);
+          const sug=getSuggestion(history,cycle,currentDay,group.name,group.reps,chosen);
+          const isTopSet=activeGroup.topSet&&!skipTopSet;
+          const storeKey=chosen?group.name+":"+chosen:group.name;
+          const topSetWeight=Number(sessionData[storeKey]?.[0]?.weight)||0;
+          const backOffSuggest=topSetWeight?Math.round(topSetWeight*0.72/5)*5:null;
           return(<>
             {sug&&(
               <div style={{marginBottom:10}}>
-                {sug.phase?.label&&<div style={{padding:"4px 10px",fontFamily:"'Space Mono',monospace",fontSize:9,letterSpacing:".1em",background:"#0A40AA12",borderLeft:"2px solid #0A40AA",color:"#0A40AA",marginBottom:4}}>{sug.phase.label}</div>}
+                {sug.phase?.phase==="deload"&&<div style={{padding:"4px 10px",fontFamily:"'Space Mono',monospace",fontSize:9,letterSpacing:".1em",background:"#FFB83318",borderLeft:"2px solid #AA6800",color:"#AA6800",marginBottom:4}}>DELOAD WEEK</div>}
                 <div style={{padding:"6px 10px",fontFamily:"'Space Mono',monospace",fontSize:10,background:sug.seeded?"#0A40AA10":sug.hitReps?"#3DD67A18":"#FFB8331a",borderLeft:`2px solid ${sug.seeded?"#0A40AA":sug.hitReps?"#0A7A2A":"#AA6800"}`,color:sug.seeded?"#0A40AA":sug.hitReps?"#0A7A2A":"#AA6800"}}>
-                  {sug.seeded?"💡":"→"} {sug.suggest} lbs · {sug.repTargetLabel} · {sug.note}
+                  {sug.seeded?"💡":"→"} {isTopSet?"Back-off target: ":""}{sug.suggest} lbs · {sug.repTargetLabel} · {sug.note}
                 </div>
               </div>
             )}
-            <div style={{display:"grid",gridTemplateColumns:"28px 1fr 1fr",gap:5,marginBottom:6}}>
-              {["SET","WEIGHT (lbs)","REPS"].map(h=><div key={h} style={{color:"#6A5A3A",fontSize:9,letterSpacing:".1em",fontFamily:"'Space Mono',monospace"}}>{h}</div>)}
-            </div>
-            {Array.from({length:group.sets}).map((_,i)=>(
-              <div key={i} style={{display:"grid",gridTemplateColumns:"28px 1fr 1fr",gap:5,marginBottom:4,alignItems:"center"}}>
-                <div style={{color:"#6A5A3A",fontSize:11,textAlign:"center",fontFamily:"'Space Mono',monospace"}}>{i+1}</div>
-                <input style={{background:"#C8BBA0",border:"1px solid #1c1c1c",color:"#0A0806",padding:"8px 10px",fontFamily:"'Space Mono',monospace",fontSize:13,width:"100%",outline:"none"}}
-                  type="number" placeholder={sug?String(sug.suggest):"—"} value={sessionData[chosen?group.name+":"+chosen:group.name]?.[i]?.weight||""} onChange={e=>updateSet(chosen?group.name+":"+chosen:group.name,i,"weight",e.target.value)}/>
-                <input style={{background:"#C8BBA0",border:"1px solid #1c1c1c",color:"#0A0806",padding:"8px 10px",fontFamily:"'Space Mono',monospace",fontSize:13,width:"100%",outline:"none"}}
-                  type="number" placeholder={group.reps.split(/[–—]/)[0]} value={sessionData[chosen?group.name+":"+chosen:group.name]?.[i]?.reps||""} onChange={e=>updateSet(chosen?group.name+":"+chosen:group.name,i,"reps",e.target.value)}/>
+            {isTopSet&&(
+              <div style={{padding:"8px 10px",marginBottom:10,background:"#AA680010",borderLeft:"3px solid #AA6800"}}>
+                <div style={{fontFamily:"'Space Mono',monospace",fontSize:9,color:"#AA6800",letterSpacing:".1em",marginBottom:5}}>HOW TO FIND YOUR TOP SET</div>
+                <div style={{fontFamily:"'Space Mono',monospace",fontSize:9,color:"#5A4A2E",lineHeight:1.7}}>
+                  1. After warm-up, load a weight you could do for ~6 reps.<br/>
+                  2. Do 3–5 reps. If easy, rest 2 min and add 5–10 lbs.<br/>
+                  3. Repeat until the last rep is genuinely hard but form holds.<br/>
+                  4. That is your top set. Log it below — back-off weight auto-calculates at 72%.
+                </div>
               </div>
-            ))}
+            )}
+            {/* Top set row (set 1) */}
+            {isTopSet&&(
+              <div style={{marginBottom:8}}>
+                <div style={{display:"grid",gridTemplateColumns:"28px 1fr 1fr",gap:5,marginBottom:4}}>
+                  {["","WEIGHT (lbs)","REPS"].map(h=><div key={h} style={{color:"#6A5A3A",fontSize:9,letterSpacing:".1em",fontFamily:"'Space Mono',monospace"}}>{h}</div>)}
+                </div>
+                <div style={{display:"grid",gridTemplateColumns:"28px 1fr 1fr",gap:5,alignItems:"center"}}>
+                  <div style={{color:"#AA6800",fontSize:10,textAlign:"center",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:".05em"}}>TOP</div>
+                  <input style={{background:"#E8D8B0",border:"2px solid #AA6800",color:"#0A0806",padding:"8px 10px",fontFamily:"'Space Mono',monospace",fontSize:13,width:"100%",outline:"none"}}
+                    type="number" placeholder={sug?String(Math.round(sug.suggest*weightMod/5)*5):"—"}
+                    value={sessionData[storeKey]?.[0]?.weight||""}
+                    onChange={e=>updateSet(storeKey,0,"weight",e.target.value)}/>
+                  <input style={{background:"#E8D8B0",border:"2px solid #AA6800",color:"#0A0806",padding:"8px 10px",fontFamily:"'Space Mono',monospace",fontSize:13,width:"100%",outline:"none"}}
+                    type="number" placeholder="3–5"
+                    value={sessionData[storeKey]?.[0]?.reps||""}
+                    onChange={e=>updateSet(storeKey,0,"reps",e.target.value)}/>
+                </div>
+              </div>
+            )}
+            {/* Back-off sets (sets 2–N) or all sets if not topSet */}
+            {isTopSet&&backOffSuggest&&(
+              <div style={{fontFamily:"'Space Mono',monospace",fontSize:9,color:"#AA6800",letterSpacing:".08em",marginBottom:6}}>
+                ↓ BACK-OFF: {backOffSuggest} lbs (72% of {topSetWeight} lbs) · 8–10 reps
+              </div>
+            )}
+            <div style={{display:"grid",gridTemplateColumns:"28px 1fr 1fr",gap:5,marginBottom:6}}>
+              {[isTopSet?"":"SET","WEIGHT (lbs)","REPS"].map(h=><div key={h} style={{color:"#6A5A3A",fontSize:9,letterSpacing:".1em",fontFamily:"'Space Mono',monospace"}}>{h}</div>)}
+            </div>
+            {Array.from({length:isTopSet?effectiveSets-1:effectiveSets}).map((_,i)=>{
+              const setIdx=isTopSet?i+1:i;
+              return(
+              <div key={setIdx} style={{display:"grid",gridTemplateColumns:"28px 1fr 1fr",gap:5,marginBottom:4,alignItems:"center"}}>
+                <div style={{color:"#6A5A3A",fontSize:11,textAlign:"center",fontFamily:"'Space Mono',monospace"}}>{setIdx+1}</div>
+                <input style={{background:"#C8BBA0",border:"1px solid #1c1c1c",color:"#0A0806",padding:"8px 10px",fontFamily:"'Space Mono',monospace",fontSize:13,width:"100%",outline:"none"}}
+                  type="number"
+                  placeholder={isTopSet?(backOffSuggest?String(Math.round(backOffSuggest*weightMod/5)*5):"—"):(sug?String(Math.round(sug.suggest*weightMod/5)*5):"—")}
+                  value={sessionData[storeKey]?.[setIdx]?.weight||""}
+                  onChange={e=>updateSet(storeKey,setIdx,"weight",e.target.value)}/>
+                <input style={{background:"#C8BBA0",border:"1px solid #1c1c1c",color:"#0A0806",padding:"8px 10px",fontFamily:"'Space Mono',monospace",fontSize:13,width:"100%",outline:"none"}}
+                  type="number"
+                  placeholder={isTopSet?"8–10":group.reps.split(/[–—]/)[0]}
+                  value={sessionData[storeKey]?.[setIdx]?.reps||""}
+                  onChange={e=>updateSet(storeKey,setIdx,"reps",e.target.value)}/>
+              </div>
+            )})}
           </>);
         })()}
         {group.mode==="reps"&&(()=>{
@@ -716,7 +963,7 @@ export default function WorkoutTracker(){
             <div style={{display:"grid",gridTemplateColumns:"28px 1fr",gap:5,marginBottom:6}}>
               {["SET","REPS"].map(h=><div key={h} style={{color:"#6A5A3A",fontSize:9,letterSpacing:".1em",fontFamily:"'Space Mono',monospace"}}>{h}</div>)}
             </div>
-            {Array.from({length:group.sets}).map((_,i)=>(
+            {Array.from({length:effectiveSets}).map((_,i)=>(
               <div key={i} style={{display:"grid",gridTemplateColumns:"28px 1fr",gap:5,marginBottom:4,alignItems:"center"}}>
                 <div style={{color:"#6A5A3A",fontSize:11,textAlign:"center",fontFamily:"'Space Mono',monospace"}}>{i+1}</div>
                 <input style={{background:"#C8BBA0",border:"1px solid #1c1c1c",color:"#0A0806",padding:"8px 10px",fontFamily:"'Space Mono',monospace",fontSize:13,width:"100%",outline:"none"}}
@@ -799,7 +1046,12 @@ export default function WorkoutTracker(){
             {group.violinRest&&<span style={{color:"#1A5A1A",marginLeft:8}}>· rest {group.violinRest}</span>}
           </div>
           {!group.cardio&&!group.violinStraight&&!group.supersetId&&group.mode!=="check"&&group.sets>1&&(
-            renderTimerButton("90 sec", group.name)
+            group.topSet
+              ? <div style={{display:"flex",gap:5,flexWrap:"wrap"}}>
+                  {renderTimerButton("2 min", group.name+" — top set", group.restMobility)}
+                  {renderTimerButton("60 sec", group.name+" — back-off", group.restMobility)}
+                </div>
+              : renderTimerButton("90 sec", group.name, group.restMobility)
           )}
         </div>
       </div>
@@ -848,7 +1100,13 @@ export default function WorkoutTracker(){
           </div>
           <div style={{padding:"8px 14px",borderTop:`1px solid ${day.color}18`,display:"flex",alignItems:"center",justifyContent:"space-between",gap:10,flexWrap:"wrap"}}>
             <span style={{color:"#6A5A3A",fontSize:10,fontFamily:"'Space Mono',monospace"}}>Rest {unit.rest} · then repeat · {g1.sets} rounds total</span>
-            {renderTimerButton(unit.rest, `${g1.name} / ${g2.name}`)}
+            {(g1.topSet||g2.topSet)
+              ? <div style={{display:"flex",gap:5,flexWrap:"wrap"}}>
+                  {renderTimerButton("2 min", `${g1.name} / ${g2.name} — top set`, g1.restMobility||g2.restMobility)}
+                  {renderTimerButton("60 sec", `${g1.name} / ${g2.name} — back-off`, g1.restMobility||g2.restMobility)}
+                </div>
+              : renderTimerButton(unit.rest, `${g1.name} / ${g2.name}`, g1.restMobility||g2.restMobility)
+            }
           </div>
         </div>
       );
@@ -1016,6 +1274,13 @@ export default function WorkoutTracker(){
                   ?(timer.seconds<=5?"Get ready...":timer.label)
                   :"Start your next set"}
               </div>
+              {timer.mobility&&(
+                <div style={{fontFamily:"'Space Mono',monospace",fontSize:9,
+                  color:timer.running?"#5A10AA":"#3A0A7A",marginTop:4,letterSpacing:".08em",
+                  opacity:timer.running?0.85:1}}>
+                  💜 {timer.running?"DURING REST: ":"DO NOW: "}{timer.mobility}
+                </div>
+              )}
             </div>
             <button onClick={stopTimer} style={{background:"none",border:"1px solid #B5A88E",
               color:"#6A5A3A",padding:"6px 10px",cursor:"pointer",
@@ -1083,7 +1348,7 @@ export default function WorkoutTracker(){
                 const isLotus=d===6;
                 const lotusDaysAgo=lotusLast?Math.floor((Date.now()-lotusLast)/(1000*60*60*24)):null;
                 return(
-                  <div key={d} onClick={()=>{setCurrentDay(d);setSessionData({});setSelectedEx({});setOpenGroup(null);setShowWarmup(true);setView("workout");}}
+                  <div key={d} onClick={()=>{setCurrentDay(d);setSessionData({});setSelectedEx({});setOpenGroup(null);setShowWarmup(true);setRecoveryDone(false);setShowRecovery(true);setView("workout");}}
                     style={{border:`1px solid ${currentDay===d?DAYS[d].color+"38":isDone?"#1e2a1e":"#BFB298"}`,padding:"15px 17px",cursor:"pointer",position:"relative",overflow:"hidden",background:isDone?"#DDD4BC":"transparent",opacity:isDone?0.72:1}}>
                     <div style={{position:"absolute",left:0,top:0,bottom:0,width:3,background:isDone?"#0A7A2A":DAYS[d].color,opacity:isDone?0.8:currentDay===d?1:0.12}}/>
                     {isDone&&<div style={{position:"absolute",right:14,top:"50%",transform:"translateY(-50%)",color:"#0A7A2A",fontSize:18}}>🎉</div>}
@@ -1155,6 +1420,56 @@ export default function WorkoutTracker(){
               </div>
               <div style={{color:"#6A5A3A",fontSize:11,fontFamily:"'Space Mono',monospace"}}>{DURATION_LABEL[currentDay]}</div>
             </div>
+
+            {/* Deload banner */}
+            {getPhase(cycle).label&&(
+              <div style={{padding:"7px 12px",fontFamily:"'Space Mono',monospace",fontSize:9,letterSpacing:".12em",
+                background:"#FFB83318",borderLeft:"3px solid #AA6800",color:"#AA6800",marginBottom:14}}>
+                {getPhase(cycle).label}
+              </div>
+            )}
+
+            {/* Recovery check-in */}
+            {!recoveryDone&&(
+              <div style={{border:"1px solid #B5A88E",marginBottom:16,background:"#DDD4BC"}}>
+                <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 14px",cursor:"pointer"}}
+                  onClick={()=>setShowRecovery(p=>!p)}>
+                  <div>
+                    <span style={{fontFamily:"'Space Mono',monospace",fontSize:10,letterSpacing:".15em",color:"#5A4A2E"}}>PRE-SESSION CHECK-IN</span>
+                    {(()=>{const score=calcRecoveryScore(recoveryData.sleep,recoveryData.soreness,recoveryData.motivation);
+                      return<span style={{marginLeft:10,fontFamily:"'Space Mono',monospace",fontSize:10,
+                        color:score>=70?"#0A7A2A":score>=50?"#AA6800":"#AA2A0A"}}>
+                        {score>=70?"✓ GOOD TO GO":score>=50?"⚠ MODERATE — consider lighter":score<50?"↓ DELOAD RECOMMENDED":""}</span>;})()}
+                  </div>
+                  <span style={{color:"#6A5A3A",fontSize:12}}>{showRecovery?"▲":"▼"}</span>
+                </div>
+                {showRecovery&&(
+                  <div style={{borderTop:"1px solid #C8BBA0",padding:"10px 14px"}}>
+                    {[
+                      {key:"sleep",label:"Sleep (hrs)",min:4,max:10,step:0.5},
+                      {key:"soreness",label:"Soreness (0=none, 5=high)",min:0,max:5,step:1},
+                      {key:"motivation",label:"Motivation (1–5)",min:1,max:5,step:1},
+                    ].map(({key,label,min,max,step})=>(
+                      <div key={key} style={{marginBottom:10}}>
+                        <div style={{color:"#6A5A3A",fontSize:9,letterSpacing:".1em",fontFamily:"'Space Mono',monospace",marginBottom:4}}>{label}</div>
+                        <div style={{display:"flex",alignItems:"center",gap:10}}>
+                          <input type="range" min={min} max={max} step={step}
+                            value={recoveryData[key]}
+                            onChange={e=>setRecoveryData(p=>({...p,[key]:Number(e.target.value)}))}
+                            style={{flex:1,accentColor:"#5A10AA"}}/>
+                          <span style={{fontFamily:"'Space Mono',monospace",fontSize:12,color:"#2A1E0E",width:28,textAlign:"right"}}>{recoveryData[key]}</span>
+                        </div>
+                      </div>
+                    ))}
+                    <button onClick={()=>{setRecoveryDone(true);setShowRecovery(false);setRecoveryScore(calcRecoveryScore(recoveryData.sleep,recoveryData.soreness,recoveryData.motivation));}}
+                      style={{background:"#5A10AA",border:"none",color:"#fff",padding:"8px 18px",
+                        fontFamily:"'Bebas Neue',sans-serif",fontSize:16,letterSpacing:".1em",cursor:"pointer",marginTop:4}}>
+                      CONFIRM
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
 
             {currentDay===6&&day.lotusPhases&&(
               <div>
