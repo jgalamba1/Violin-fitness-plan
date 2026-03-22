@@ -7,6 +7,7 @@ const store = {
   set: (key, val) => { try { localStorage.setItem(key, val); } catch {} },
 };
 
+const VERSION = "1.0.0";
 const YT = q => `https://www.youtube.com/results?search_query=${encodeURIComponent(q)}`;
 
 const INFO = {
@@ -100,10 +101,10 @@ const INFO = {
   "Back Extension Machine (hyperextension)":["Hinge at hips, lower torso toward floor, extend back to neutral — do NOT hyperextend past straight. Added automatically when leg press replaces squat.",YT("back extension machine hyperextension form tutorial")],
   "Smith Machine Good Morning":["Bar on upper traps, slight knee bend. Hinge forward at hips until torso near parallel — spine neutral throughout. Drive hips forward to return.",YT("smith machine good morning exercise form")],
   "45-degree Back Extension (bodyweight)":["On the 45° bench, cross arms on chest. Lower until hamstring stretch, return to neutral. Add a plate to progress.",YT("45 degree back extension form tutorial")],
-  "Serratus Wall Slide":["Forearms on wall, actively push into wall. Slide arms overhead while maintaining that push.",YT("serratus wall slide exercise scapula")],
+  "Serratus Wall Slide":["Place a resistance band or pillowcase loop between your hands at chest height — this horizontal tension cues serratus activation throughout the movement. Forearms on wall, actively push into wall. Slide arms overhead maintaining the push and keeping tension in the band/pillowcase. At the top, hold briefly before returning.",YT("serratus wall slide exercise scapula")],
   "Scapular Push-Up":["In plank. Let chest sink between arms (retract), then push chest away (protract).",YT("scapular push up serratus anterior")],
   "Bear Crawl Hold with scapular protraction":["Hands and knees, knees slightly off floor. Push hands into floor to protract scapulae.",YT("bear crawl hold scapular protraction")],
-  "Floor Y-T-W (prone)":["Face down. Y=thumbs-up at 135°, T=straight out, W=elbows 90°. Lift with lower trap.",YT("floor YTW prone lower trapezius exercise")],
+  "Floor Y-T-W (prone)":["Face down. Y=thumbs-up at 135°, T=straight out at shoulder height, W=elbows bent 90°. Lift with lower trap, not upper. For wall Y variation: stand facing wall, place hands in Y position on wall, then at the end position actively pull hands away from the wall to squeeze the muscles between the shoulder blades — hold 2–3 sec before returning.",YT("floor YTW prone lower trapezius exercise")],
   "Superman hold with Y-arms":["Face down, arms in Y overhead. Lift chest and arms, hold 2–3 seconds.",YT("superman hold Y arms lower trapezius")],
   "Band Pull-Apart":["Hold band/towel at shoulder width. Pull fully apart.",YT("band pull apart rear delt form")],
   "Side-Lying External Rotation (no weight)":["On side, elbow 90°. Rotate forearm toward ceiling.",YT("side lying external rotation no weight rotator cuff")],
@@ -131,7 +132,7 @@ const INFO = {
   "Open Book with Thoracic Rotation":["Lie on your side with knees stacked at 90°. Both arms extended forward at shoulder height. Keep lower arm on floor and lower knees stacked — do not let them separate. Slowly rotate upper arm up and over to the opposite side, following your hand with your eyes, letting your thoracic spine rotate. Lower arm and knees stay anchored. Return slowly. 8–10 reps each side.",YT("open book thoracic rotation stretch")],
   "Right Sidelying Supported Left Glute Med (PRI)":["Lie on right side, feet on wall, hips and knees at 90°, back rounded. Place 4–5 inch ball between knees. Push right foot into wall. Slide left hip back without arching. Press left knee down into ball — feel left inner thigh engage. Rotate left thigh inward by lifting left lower leg toward ceiling — feel left outer hip (glute med) engage. Hold for 4–5 slow breaths. Relax and repeat 4 more times.",YT("PRI sidelying glute med left AIC")],
   "Left Sidelying Right Glute Max (PRI)":["Lie on left side, feet on wall, hips and knees at 90°, back rounded. Small towel roll under ankles and left abdominals. Press left hip down — feel left abs lift away from towel roll. Shift right hip forward until you feel a stretch in left outer hip. Turn right knee out keeping left knee on mat, using wall as fulcrum. Turn knee as high as possible without moving right hip back — feel right outer hip (glute max) engage. Hold 4–5 slow breaths. Repeat 4 more times.",YT("PRI sidelying right glute max left AIC")],
-  "First Rib Mobilization":["Sit upright. Reach right hand under chair seat and hold it to anchor right shoulder down. Side-bend head to right, then rotate slightly to look down and right — feel stretch on left side of neck (scalenes). This depresses the left first rib. Take 3–5 slow exhales; the exhalation is what mobilizes the rib. Repeat on opposite side if needed, but left is primary for Left AIC pattern.",YT("first rib mobilization scalene self")],
+  "First Rib Mobilization + Scalene Stretch":["Sit upright. Anchor right hand under chair seat to depress right shoulder. Side-bend head to right. PART 1 — First Rib Mob: rotate head slightly to look down-right. Take 3–5 slow exhales — the exhalation depresses the left first rib. PART 2 — Scalene Stretch: from same position, adjust head to look slightly up-right instead. Hold 30–45 sec with slow exhales to bias anterior and middle scalenes. Left side is primary (Left AIC pattern). Repeat on right side if needed.",YT("first rib mobilization scalene self")],
   "Wrist Flexor Stretch":["Arm extended, palm up, pull fingers back.",YT("wrist flexor stretch musicians violinists")],
   "Wrist Extensor Stretch":["Arm extended, palm down, pull fingers back toward you.",YT("wrist extensor stretch forearm musicians")],
   "Thoracic Rotation Stretch":["Seated, anchor one arm, rotate through mid-back only.",YT("thoracic rotation stretch mobility")],
@@ -272,7 +273,7 @@ const DAYS = {
     {name:"Violin Mobility",violin:true,mode:"reps",sets:2,reps:"10 each",exercises:["Serratus Wall Slide","Floor Y-T-W (prone)","Chin Tuck against wall","Band Pull-Apart"]},
     {name:"Core — Deep Stabilizers",core:true,mode:"reps",sets:2,reps:"8 each",exercises:["Dead Bug","Bird Dog"]},
     {name:"PRI — Hip & Pelvis Reset 🔄",violin:true,mode:"reps",sets:1,reps:"5 breaths × 5 reps",exercises:["Right Sidelying Supported Left Glute Med (PRI)","Left Sidelying Right Glute Max (PRI)"]},
-    {name:"First Rib Mobilization",violin:true,mode:"reps",sets:1,reps:"3–5 breaths each side",exercises:["First Rib Mobilization"]},
+    {name:"First Rib + Scalene",violin:true,mode:"reps",sets:1,reps:"3–5 breaths each side",exercises:["First Rib Mobilization + Scalene Stretch"]},
     {name:"Lower Body",mode:"reps",sets:2,reps:"12 each",exercises:["Lateral Lunge","Single-Leg Glute Bridge","Side-Lying Hip Abduction","Clamshell"]},
     {name:"Flexibility — Violin & Upper Body 🎻",violin:true,mode:"check",duration:"45 sec each",exercises:["Upper Trap Stretch","Wrist Flexor Stretch","Wrist Extensor Stretch","Lat Stretch","Open Book with Thoracic Rotation"]},
     {name:"Flexibility — Lower Body",mode:"check",duration:"45 sec each",exercises:["Hip Flexor Stretch (couch stretch)","Hamstring Stretch (standing)","Piriformis Stretch (figure-4)"]},
@@ -1309,7 +1310,7 @@ export default function WorkoutTracker(){
       )}
 
       <div style={{borderBottom:"1px solid #121212",padding:"13px 18px",display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,background:"#E8DFCD",zIndex:10}}>
-        <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:19,letterSpacing:".2em",color:"#0A0806"}}>🎻 GYM LOG</div>
+        <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:19,letterSpacing:".2em",color:"#0A0806"}}>🎻 GYM LOG <span style={{fontSize:9,fontFamily:"'Space Mono',monospace",color:"#9A8A6A",letterSpacing:".1em",verticalAlign:"middle"}}>v{VERSION}</span></div>
         <div style={{display:"flex"}}>
           {[["home","HOME"],["history","LOG"]].map(([v,l])=>(
             <button key={v} onClick={()=>setView(v)} style={{background:"none",border:"none",cursor:"pointer",padding:"10px 14px",fontFamily:"'Space Mono',monospace",fontSize:10,letterSpacing:".2em",textTransform:"uppercase",color:view===v?"#fff":"#6A5A3A",borderBottom:view===v?`2px solid ${day.color}`:"2px solid transparent"}}>{l}</button>
